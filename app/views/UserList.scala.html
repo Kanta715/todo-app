@@ -1,0 +1,12 @@
+@import lib.model.User
+@import lib.model.User.Status.IS_INACTIVE
+
+
+@(vv: model.ViewValueList, user: User#WithNoId)
+
+@common.Default(vv){
+    <ul>
+        <li>@user.title</li>
+        <li>@user.body</li>
+    </ul>
+}

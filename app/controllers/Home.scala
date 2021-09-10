@@ -30,13 +30,13 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
     Ok(views.html.Home(vv))
   }
 
-  def list() = Action { implicit request =>
+  def userList() = Action { implicit request =>
     val vv = ViewValueList(
       title   = "TODO-List",
       cssSrc  = Seq("main.css"),
       jsSrc   = Seq("main.js")
     )
     val user: User#WithNoId = User( 5, "nextbeat", "nextbeat-identity", IS_INACTIVE)
-    Ok(views.html.List(vv, user))
+    Ok(views.html.UserList(vv, user))
   }
 }
