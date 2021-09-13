@@ -8,7 +8,8 @@ package controllers
 
 import ixias.model.Entity.WithNoId
 import lib.model.User.Status.IS_INACTIVE
-import lib.persistence.UserRepository
+import lib.persistence.onMySQL._
+import scala.concurrent.duration.Duration
 
 import javax.inject._
 import play.api.mvc._
@@ -33,10 +34,14 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
   def userList() = Action { implicit request =>
     val vv = ViewValueList(
       title   = "TODO-List",
-      cssSrc  = Seq("main.css"),
-      jsSrc   = Seq("main.js")
+      cssSrc  = Seq("userList.css"),
+      jsSrc   = Seq("list.js")
     )
-    val user: User#WithNoId = User( 5, "nextbeat", "nextbeat-identity", IS_INACTIVE)
-    Ok(views.html.UserList(vv, user))
+    val userTableInfo     = UserRepository.getAll()
+    val userInfo          = Await.result(userTableInfo, Duration.Inf)
+
+    val userCategoryInfo  = UserCategoryRepository.getAll()
+    val userCategory  = Await.result(userCategoryInfo, Duration.Inf)
+    Ok(views.html.UserList(vv, userInfo,  userCategory))
   }
 }
