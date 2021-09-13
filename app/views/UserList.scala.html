@@ -1,12 +1,39 @@
 @import lib.model.User
-@import lib.model.User.Status.IS_INACTIVE
+@import lib.model.User.Status._
+@import lib.model.UserCategory
 
-
-@(vv: model.ViewValueList, user: User#WithNoId)
+@(  vv:             model.ViewValueList,
+    userInfo:       List[User],
+    userCategory:   List[UserCategory]
+)
 
 @common.Default(vv){
-    <ul>
-        <li>@user.title</li>
-        <li>@user.body</li>
-    </ul>
+    <div class="userList">
+        <table>
+            <tr>
+                <th>タイトル</th>
+                <th>内容   </th>
+                <th>現状   </th>
+                <th>カテゴリ</th>
+            </tr>
+            @for(user <- userInfo){
+                <tr>
+                    <td>@user.title     </td>
+                    <td>@user.body      </td>
+                    <td>@user.state.name</td>
+                    <td>
+                        @for(category <- userCategory){
+                            @if(user.category_id == category.color && category.color == 1){
+                                @category.name
+                            } else if(user.category_id == category.color && category.color == 2){
+                                @category.name
+                            } else if(user.category_id == category.color && category.color == 3){
+                                @category.name
+                            }
+                        }
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
 }
