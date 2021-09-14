@@ -21,12 +21,16 @@ case class UserRepository[P <: JdbcProfile]()(implicit val driver: P)
   /**
     * Get User Data
     */
-  def get(id: Id): Future[Option[EntityEmbeddedId]] =
+  def get(id: Id): Future[Option[EntityEmbeddedId]] = {
     RunDBAction(UserTable, "slave") { _
       .filter(_.id === id)
       .result.headOption
   }
 
+  }
+
+  //  参照なので、slaveで取得
+  //  RunDBActionの挙動自体があまり理解できていないため、資料を見ないと実装できなかった
   def getAll(): Future[List[User]] =
     RunDBAction(UserTable, "slave") { _
       .to[List].result

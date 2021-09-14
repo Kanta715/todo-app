@@ -6,14 +6,14 @@ import ixias.persistence.model.Table
 
 import lib.model.UserCategory
 
-// UserTable: Userテーブルへのマッピングを行う
+// to_do_categoryテーブルにマッピングをする
 //~~~~~~~~~~~~~~
 case class UserCategoryTable[P <: JdbcProfile]()(implicit val driver: P)
   extends Table[UserCategory, P] {
 
   import api._
 
-  // Definition of DataSourceName
+  // データベース指定
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   lazy val dsn = Map(
     "master" -> DataSourceName("ixias.db.mysql://master/to_do"),
@@ -26,13 +26,13 @@ case class UserCategoryTable[P <: JdbcProfile]()(implicit val driver: P)
 
   lazy val query = new Query
 
-  // Definition of Table
+  // テーブル指定
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   class Table(tag: Tag) extends BasicTable(tag, "to_do_category") {
 
     import UserCategory._
 
-    // Columns
+    //  カラムを指定
     /* @1 */ def id = column[Id]("id", O.UInt64, O.PrimaryKey, O.AutoInc)
 
     /* @2 */ def name = column[String]("name", O.Utf8Char255)
@@ -49,7 +49,7 @@ case class UserCategoryTable[P <: JdbcProfile]()(implicit val driver: P)
       Option[Id], String, String, Short, LocalDateTime, LocalDateTime
       )
 
-    // DB <=> Scala の相互のmapping定義
+    // DB <=> Scala の相互のマッピング定義
     def * = (id.?, name, slug, color, updatedAt, createdAt) <> (
       // Tuple(table) => Model
       (t: TableElementTuple) => UserCategory(
