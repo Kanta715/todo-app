@@ -2,9 +2,10 @@
 @import lib.model.User.Status._
 @import lib.model.UserCategory
 
-@(  vv:             model.ViewValueList,
-    userInfo:       List[User],
-    userCategory:   List[UserCategory]
+@(
+vv:             model.ViewValueList,
+userInfo:       List[User],
+userCategory:   List[UserCategory]
 )
 
 @common.Default(vv){
@@ -16,22 +17,14 @@
                 <th>現状   </th>
                 <th>カテゴリ</th>
             </tr>
+            @*   for文でuserInfoの要素数、情報を出力    *@
             @for(user <- userInfo){
                 <tr>
-                    <td>@user.title     </td>
-                    <td>@user.body      </td>
-                    <td>@user.state.name</td>
-                    <td>
-                        @for(category <- userCategory){
-                            @if(user.category_id == category.color && category.color == 1){
-                                @category.name
-                            } else if(user.category_id == category.color && category.color == 2){
-                                @category.name
-                            } else if(user.category_id == category.color && category.color == 3){
-                                @category.name
-                            }
-                        }
-                    </td>
+                    <td>             @user.title      </td>
+                    <td>             @user.body       </td>
+                    <td>             @user.state.name </td>
+                    @*   背景色変換とカテゴリ名の出力は、userList.jsで操作     *@
+                    <td class="slug">@user.category_id.toString</td>
                 </tr>
             }
         </table>

@@ -1,6 +1,6 @@
 package model
 
-// Topページのviewvalue
+// UserListページのviewvalue
 case class ViewValueList(
     title:  String,
     cssSrc: Seq[String],

@@ -5,7 +5,7 @@ import ixias.util.EnumStatus
 
 import java.time.LocalDateTime
 
-// ユーザーを表すモデル
+// カテゴリを表すモデル
 //~~~~~~~~~~~~~~~~~~~~
 import UserCategory._
 case class UserCategory(
@@ -20,13 +20,13 @@ case class UserCategory(
 // コンパニオンオブジェクト
 //~~~~~~~~~~~~~~~~~~~~~~~~
 object UserCategory {
-
+  //  UserCategoryの型を引き継がせないと生成やマッピング等ができないため、型を代入する
   val  Id = the[Identity[Id]]
   type Id = Long @@ UserCategory
   type WithNoId = Entity.WithNoId [Id, UserCategory]
   type EmbeddedId = Entity.EmbeddedId[Id, UserCategory]
 
-  // INSERT時のIDがAutoincrementのため,IDなしであることを示すオブジェクトに変換
+  // name, slug, color のみインスタンスの生成に必要 (idは自分でNoneにしないとWithNoIdで生成できない)
   def apply(name: String, slug: String, color: Short): WithNoId = {
     new Entity.WithNoId(
       new UserCategory(
