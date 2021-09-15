@@ -5,11 +5,13 @@
 
 # An example controller showing a sample home page
 GET     /                             controllers.HomeController.index
-GET     /userList                     controllers.HomeController.userList
-GET     /store                        controllers.HomeController.register
-POST    /store                        controllers.HomeController.store
-GET     /edit/$id<[0-9]+>             controllers.HomeController.edit(id:   Int)
-POST    /update/$id<[0-9]+>           controllers.HomeController.update(id: Int)
+
+GET     /todo/userList                     controllers.TodoController.userList
+GET     /todo/store                        controllers.TodoController.register
+POST    /todo/store                        controllers.TodoController.store
+GET     /todo/edit/$id<[0-9]+>             controllers.TodoController.edit(id:   Int)
+POST    /todo/update/$id<[0-9]+>           controllers.TodoController.update(id: Int)
+POST    /todo/delete/$id<[0-9]+>           controllers.TodoController.delete(id: Int)
 
 
 # Map static resources from the /public folder to the /assets URL path

@@ -6,7 +6,7 @@ form:   Form[model.TodoData]
 )(implicit request: RequestHeader,  messageProvider: MessagesProvider)
 
 @common.Default(vv){
-    @helper.form(action = controllers.routes.HomeController.store()) {
+    @helper.form(action = controllers.routes.TodoController.store()) {
         @helper.CSRF.formField
 
         @*   １行だけのテキスト  *@
