@@ -11,11 +11,12 @@ form:   Form[model.TodoData]
 
         @*   １行だけのテキスト  *@
         @helper.inputText(form("title"),
-            'cols -> 50,    '_label -> "タイトル",     '_showConstrains -> false
+            'size -> 100,    '_label -> "タイトル",     '_showConstrains -> false,  'placeholder -> "タイトルを入力"
         )
         @*   複数行のテキスト(制約はない)    *@
         @helper.textarea(form("body"),
-            'rows -> 6,     'cols -> 150,        '_label -> "内容",    '_showConstrains -> false
+            'rows -> 6,     'cols -> 150,        '_label -> "内容",    '_showConstrains -> false,
+            'placeholder -> "Todoの内容を入力（任意）"
         )
         @*   フロント、バック、インフラのみなのでラジオ式     *@
         @helper.inputRadioGroup(form("categoryName"),

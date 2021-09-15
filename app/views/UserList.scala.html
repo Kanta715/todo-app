@@ -16,6 +16,7 @@ userCategory:   List[UserCategory]
                 <th>内容   </th>
                 <th>現状   </th>
                 <th>カテゴリ</th>
+                <th>編集   </th>
             </tr>
             @*   for文でuserInfoの要素数、情報を出力    *@
             @for(user <- userInfo){
@@ -25,6 +26,7 @@ userCategory:   List[UserCategory]
                     <td>             @user.state.name </td>
                     @*   背景色変換とカテゴリ名の出力は、userList.jsで操作     *@
                     <td class="slug">@user.category_id.toString</td>
+                    <td><a href="@controllers.routes.HomeController.edit(user.id.get.toInt)">編集画面へ</a></td>
                 </tr>
             }
         </table>

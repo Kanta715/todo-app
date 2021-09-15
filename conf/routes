@@ -8,6 +8,9 @@ GET     /                             controllers.HomeController.index
 GET     /userList                     controllers.HomeController.userList
 GET     /store                        controllers.HomeController.register
 POST    /store                        controllers.HomeController.store
+GET     /edit/$id<[0-9]+>             controllers.HomeController.edit(id:   Int)
+POST    /update/$id<[0-9]+>           controllers.HomeController.update(id: Int)
+
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
