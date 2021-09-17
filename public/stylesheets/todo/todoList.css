@@ -42,12 +42,12 @@ body {
   display: none;
 }
 
-.userList {
+.todoList {
     text-align: center;
     margin: 0 auto;
 }
 
-.userList table {
+.todoList table {
     margin: 0 auto;
 }
 
@@ -57,14 +57,14 @@ h1 {
     font-family:    'Bitter', serif;
 }
 
-.userList th {
+.todoList th {
     background-color:   #696969;
     border-bottom:      1px   solid   #000000;
     width:              200px;
     padding:            20px    20px;
 }
 
-.userList td {
+.todoList td {
     padding:            60px    20px;
     border-bottom:      1px   solid   #778899;
     background-color:   white;
@@ -72,18 +72,18 @@ h1 {
     border-collapse:    collapse;
 }
 
-.userList td p {
+.todoList td p {
     margin:     0;
     padding:    60px
 }
 
-.userList td:last-child {
+.todoList td:last-child {
     padding:            0;
     background-color:   black;
     text-align:         center;
 }
 
-.userList td input {
+.todoList td input {
     color:              red;
     background-color:   black;
     border:             none;
@@ -92,6 +92,10 @@ h1 {
     font-size:          15px;
     padding:            0;
 
+}
+
+.register a{
+    font-size:  30px;
 }
 
 

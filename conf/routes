@@ -6,7 +6,7 @@
 # An example controller showing a sample home page
 GET     /                             controllers.HomeController.index
 
-GET     /todo/userList                     controllers.TodoController.userList
+GET     /todo/todoList                     controllers.TodoController.todoList
 GET     /todo/store                        controllers.TodoController.register
 POST    /todo/store                        controllers.TodoController.store
 GET     /todo/edit/$id<[0-9]+>             controllers.TodoController.edit(id:   Int)

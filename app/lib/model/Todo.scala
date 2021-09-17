@@ -12,8 +12,8 @@ import java.time.LocalDateTime
 
 // ユーザーを表すモデル
 //~~~~~~~~~~~~~~~~~~~~
-import User._
-case class User(
+import Todo._
+case class Todo(
   id:           Option[Id],
   category_id:  Int,
   title:        String,
@@ -25,12 +25,12 @@ case class User(
 
 // コンパニオンオブジェクト
 //~~~~~~~~~~~~~~~~~~~~~~~~
-object User {
+object Todo {
 
   val  Id = the[Identity[Id]]
-  type Id = Long @@ User
-  type WithNoId = Entity.WithNoId [Id, User]
-  type EmbeddedId = Entity.EmbeddedId[Id, User]
+  type Id = Long @@ Todo
+  type WithNoId = Entity.WithNoId [Id, Todo]
+  type EmbeddedId = Entity.EmbeddedId[Id, Todo]
 
   // ステータス定義
   //~~~~~~~~~~~~~~~~~
@@ -44,7 +44,7 @@ object User {
   // INSERT時のIDがAutoincrementのため,IDなしであることを示すオブジェクトに変換
   def apply(category_id: Int, title: String, body:String, state: Status): WithNoId = {
     new Entity.WithNoId(
-      new User(
+      new Todo(
         id            = None,
         category_id   = category_id,
         title         = title,

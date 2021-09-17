@@ -1,9 +1,8 @@
-@import lib.model.User
+@import lib.model.Todo
 
 @(
 vv:     model.ViewValueStore,
-id:     User.Id,
-form:   Form[model.TodoData]
+id:     Todo.Id
 )(implicit request: RequestHeader,  messageProvider: MessagesProvider)
 
 @common.Default(vv){
@@ -11,23 +10,26 @@ form:   Form[model.TodoData]
         @helper.CSRF.formField
 
         @*   １行だけのテキスト  *@
-        @helper.inputText(form("title"),
+        @helper.inputText(vv.form("title"),
         'size -> 100,    '_label -> "タイトル",     '_showConstrains -> false
         )
 
         @*   複数行のテキスト(制約はない)    *@
-        @helper.textarea(form("body"),
+        @helper.textarea(vv.form("body"),
         'rows -> 6,     'cols -> 150,        '_label -> "内容",    '_showConstrains -> false,
         'class -> "textarea"
         )
 
         @*   フロント、バック、インフラのみなのでラジオ式     *@
-        @helper.inputRadioGroup(form("categoryName"),
+        @helper.inputRadioGroup(vv.form("categoryName"),
         options = Seq("フロントエンド" -> "フロントエンド", "バックエンド" -> "バックエンド", "インフラ" -> "インフラ"),
         '_label -> "開発カテゴリ"
         )
 
-        <input type="submit" value="Todo編集完了">
+        <p><input type="submit" value="Todo編集完了"></p>
+
+        <a href="/todo/todoList">一覧画面に戻る</a>
+
     }
 }
 

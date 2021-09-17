@@ -9,12 +9,12 @@ import java.time.LocalDateTime
 import slick.jdbc.JdbcProfile
 import ixias.persistence.model.Table
 
-import lib.model.User
+import lib.model.Todo
 
-// UserTable: Userテーブルへのマッピングを行う
+// TodoTable: to_doテーブルへのマッピングを行う
 //~~~~~~~~~~~~~~
-case class UserTable[P <: JdbcProfile]()(implicit val driver: P)
-  extends Table[User, P] {
+case class TodoTable[P <: JdbcProfile]()(implicit val driver: P)
+  extends Table[Todo, P] {
   import api._
 
   // Definition of DataSourceName
@@ -32,7 +32,7 @@ case class UserTable[P <: JdbcProfile]()(implicit val driver: P)
   // Definition of Table
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   class Table(tag: Tag) extends BasicTable(tag, "to_do") {
-    import User._
+    import Todo._
     // Columns
     /* @1 */ def id           = column[Id]            ("id",              O.UInt64, O.PrimaryKey, O.AutoInc)
     /* @2 */ def category_id  = column[Int]           ("category_id",     O.UInt64)
@@ -49,11 +49,11 @@ case class UserTable[P <: JdbcProfile]()(implicit val driver: P)
     // DB <=> Scala の相互のmapping定義
     def * = (id.?, category_id, title, body, state, updatedAt, createdAt) <> (
       // Tuple(table) => Model
-      (t: TableElementTuple) => User(
+      (t: TableElementTuple) => Todo(
         t._1, t._2, t._3, t._4, t._5, t._6, t._7
       ),
       // Model => Tuple(table)
-      (v: TableElementType) => User.unapply(v).map { t => (
+      (v: TableElementType) => Todo.unapply(v).map { t => (
         t._1, t._2, t._3, t._4, t._5, LocalDateTime.now(), t._7
       )}
     )

@@ -4,12 +4,12 @@ import java.time.LocalDateTime
 import slick.jdbc.JdbcProfile
 import ixias.persistence.model.Table
 
-import lib.model.UserCategory
+import lib.model.TodoCategory
 
 // to_do_categoryテーブルにマッピングをする
 //~~~~~~~~~~~~~~
-case class UserCategoryTable[P <: JdbcProfile]()(implicit val driver: P)
-  extends Table[UserCategory, P] {
+case class TodoCategoryTable[P <: JdbcProfile]()(implicit val driver: P)
+  extends Table[TodoCategory, P] {
 
   import api._
 
@@ -30,7 +30,7 @@ case class UserCategoryTable[P <: JdbcProfile]()(implicit val driver: P)
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   class Table(tag: Tag) extends BasicTable(tag, "to_do_category") {
 
-    import UserCategory._
+    import TodoCategory._
 
     //  カラムを指定
     /* @1 */ def id = column[Id]("id", O.UInt64, O.PrimaryKey, O.AutoInc)
@@ -52,11 +52,11 @@ case class UserCategoryTable[P <: JdbcProfile]()(implicit val driver: P)
     // DB <=> Scala の相互のマッピング定義
     def * = (id.?, name, slug, color, updatedAt, createdAt) <> (
       // Tuple(table) => Model
-      (t: TableElementTuple) => UserCategory(
+      (t: TableElementTuple) => TodoCategory(
         t._1, t._2, t._3, t._4, t._5, t._6
       ),
       // Model => Tuple(table)
-      (v: TableElementType) => UserCategory.unapply(v).map { t =>
+      (v: TableElementType) => TodoCategory.unapply(v).map { t =>
         (
           t._1, t._2, t._3, t._4, LocalDateTime.now(), t._6
         )
