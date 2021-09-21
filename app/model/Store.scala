@@ -1,5 +1,6 @@
 package model
 
+import model.TodoForm.TodoData
 import play.api.data.Form
 
 // Storeページのviewvalue

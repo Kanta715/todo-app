@@ -1,7 +1,7 @@
 @import lib.model.Todo
 
 @(
-vv:     model.ViewValueStore,
+vv:     model.ViewValueEdit,
 id:     Todo.Id
 )(implicit request: RequestHeader,  messageProvider: MessagesProvider)
 
@@ -18,6 +18,12 @@ id:     Todo.Id
         @helper.textarea(vv.form("body"),
         'rows -> 6,     'cols -> 150,        '_label -> "内容",    '_showConstrains -> false,
         'class -> "textarea"
+        )
+
+        @*  TODOの状況  *@
+        @helper.inputRadioGroup(vv.form("stateName"),
+        options = Seq("未着手" -> "TODO",  "実行中" -> "実行中",  "完了" -> "完了"),
+        '_label -> "TODO状況"
         )
 
         @*   フロント、バック、インフラのみなのでラジオ式     *@

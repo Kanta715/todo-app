@@ -1,6 +1,6 @@
 package controllers
 
-import lib.model.Todo.Status.IS_INACTIVE
+import lib.model.Todo.Status.{DONE, IS_ACTIVE, IS_INACTIVE}
 
 import scala.concurrent.duration.Duration
 import play.api.i18n.I18nSupport
@@ -8,12 +8,13 @@ import play.api.data.Form
 
 import javax.inject._
 import play.api.mvc._
+import model.TodoForm.TodoEditData._
 import model._
 import lib.model.Todo
 
 import scala.concurrent.Future
 import scala.util.{Failure, Success}
-import model.TodoData._
+import model.TodoForm.TodoData._
 import lib.persistence.onMySQL.TodoRepository
 
 import scala.concurrent.Await
@@ -53,7 +54,7 @@ class TodoController @Inject()(
 
   def store() = Action.async { implicit request =>
     todoForm.bindFromRequest().fold(
-      (formWithErrors: Form[TodoData]) => {
+      (formWithErrors: Form[TodoForm.TodoData]) => {
         for {
           vv <- Future{ViewValueStore(
             title   = "TODO登録",
@@ -64,7 +65,7 @@ class TodoController @Inject()(
           }
         } yield BadRequest(views.html.todo.Store(vv))
       },
-      (todoFormData: TodoData) => {
+      (todoFormData: TodoForm.TodoData) => {
         for {
           cId       <- Future{
             if(todoFormData.categoryName == "フロントエンド") 1 else if(todoFormData.categoryName == "バックエンド") 2 else 3
@@ -80,9 +81,9 @@ class TodoController @Inject()(
 
   def edit(Id:  Int) = Action.async { implicit request =>
     for{
-      todoGetAll   <- TodoRepository.getAll()
+      todoList   <- TodoRepository.getAll()
     } yield {
-      val todoInfo = todoGetAll.find(v => v.id.get.toInt == Id).get
+      val todoInfo = todoList.find(v => v.id.get.toInt == Id).get
       todoInfo match {
         case todo: Todo =>
           val c = todo.category_id match {
@@ -90,11 +91,11 @@ class TodoController @Inject()(
             case 2 => "バックエンド"
             case 3 => "インフラ"
           }
-          val vv  = ViewValueStore(
+          val vv  = ViewValueEdit(
             title   = "TODO編集",
             cssSrc  = Seq("todo/store.css"),
             jsSrc   = Seq("todo/todoList.js"),
-            form    = todoForm.fill(TodoData(todo.title,  todo.body,  c))
+            form    = todoEditForm.fill(TodoForm.TodoEditData(todo.title,  todo.body, todo.state.name,  c))
           )
           Ok(views.html.todo.Edit(vv, todo.id.get))
         case _  => Redirect("todo/todoList")
@@ -104,8 +105,8 @@ class TodoController @Inject()(
   }
 
   def update(Id:  Int) = Action.async { implicit request =>
-    todoForm.bindFromRequest().fold(
-      (formWithErrors: Form[TodoData]) => {
+    todoEditForm.bindFromRequest().fold(
+      (formWithErrors: Form[TodoForm.TodoEditData]) => {
         for {
           vv <- Future.successful{ViewValueHome(
             title = "TODO登録",
@@ -116,7 +117,7 @@ class TodoController @Inject()(
           BadRequest(views.html.error.page404(vv))
         }
       },
-      (todoFormData: TodoData) => {
+      (todoFormData: TodoForm.TodoEditData) => {
         for{
           vv <- Future{ViewValueHome(
             title = "TODO登録",
@@ -127,12 +128,13 @@ class TodoController @Inject()(
           editedTodo     <-  Future.successful {
             val todo        = todoList.find(v => v.id.get.toInt == Id)
             val cId         = if (todoFormData.categoryName == "フロントエンド") 1 else if (todoFormData.categoryName == "バックエンド") 2 else 3
+            val state       = if (todoFormData.stateName == "TODO") IS_INACTIVE else if (todoFormData.stateName == "実行中") IS_ACTIVE else DONE
             val todoInfo    = TodoRepository.get(todo.get.id.get)
             val todoRecord  = Await.ready(todoInfo, Duration.Inf)
             val tdr         = todoRecord.value.get match {
               case Success(value) =>  value.get
             }
-            tdr.map(_.copy(title = todoFormData.title, body = todoFormData.body, category_id = cId))
+            tdr.map(_.copy(title = todoFormData.title, body = todoFormData.body, state = state, category_id = cId))
           }
           todo           <- TodoRepository.update(editedTodo)
         } yield {

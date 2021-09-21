@@ -1,5 +1,6 @@
-package model
+package model.TodoForm
 
+import model.TodoForm
 import play.api.data.Forms._
 import play.api.data._
 
@@ -16,6 +17,6 @@ object TodoData{
       "title"         ->  nonEmptyText,
       "body"          ->  text,
       "categoryName"  ->  text
-    )(TodoData.apply)(TodoData.unapply)
+    )(TodoForm.TodoData.apply)(TodoForm.TodoData.unapply)
   )
 }
