@@ -1,6 +1,6 @@
-package model
+package model.TodoVV
 
-import lib.model.Todo
+import model.ViewValueCommon
 
 
 // UserListページのviewvalue

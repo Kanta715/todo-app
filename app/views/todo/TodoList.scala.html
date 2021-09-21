@@ -1,9 +1,8 @@
 @import lib.model.Todo
 @import lib.model.Todo.Status._
-@import model._
 
 @(
-vv:         ViewValueList,
+vv:         model.TodoVV.ViewValueList,
 todoInfo:   List[Todo]
 )(implicit request: RequestHeader,  messageProvider: MessagesProvider)
 

@@ -16,6 +16,7 @@ import scala.concurrent.Future
 import scala.util.{Failure, Success}
 import model.TodoForm.TodoData._
 import lib.persistence.onMySQL.TodoRepository
+import model.TodoVV.{ViewValueEdit, ViewValueList, ViewValueStore}
 
 import scala.concurrent.Await
 import scala.concurrent.ExecutionContext
@@ -23,8 +24,7 @@ import scala.concurrent.ExecutionContext
 
 
 @Singleton
-class TodoController @Inject()(
-                                val controllerComponents: ControllerComponents)(implicit ec: ExecutionContext)
+class TodoController @Inject()(val controllerComponents: ControllerComponents)(implicit ec: ExecutionContext)
   extends BaseController with I18nSupport {
 
   def todoList() = Action.async { implicit request =>

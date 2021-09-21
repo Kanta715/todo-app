@@ -1,6 +1,6 @@
 @import model.TodoForm.TodoData
 
-@(vv:     model.ViewValueStore)(implicit request: RequestHeader,  messageProvider: MessagesProvider)
+@(vv:     model.TodoVV.ViewValueStore)(implicit request: RequestHeader,  messageProvider: MessagesProvider)
 
 @common.Default(vv){
     @helper.form(action = controllers.routes.TodoController.store()) {
