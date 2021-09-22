@@ -8,16 +8,12 @@ import play.api.data.Form
 
 import javax.inject._
 import play.api.mvc._
-import model._
 
 import scala.concurrent.Future
-import scala.util.{Failure, Success}
-import model.TodoForm.TodoData._
 import lib.persistence.onMySQL.TodoCategoryRepository
 import model.CategoryForm.CategoryData
 import model.CategoryForm.CategoryData.categoryForm
 
-import scala.concurrent.Await
 import scala.concurrent.ExecutionContext
 import model.TodoCategoryVV._
 
