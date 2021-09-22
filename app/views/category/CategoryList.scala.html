@@ -1,0 +1,26 @@
+@import lib.model.TodoCategory
+
+@(
+vv:     model.TodoCategoryVV.ViewValueCategoryList,
+list:   List[TodoCategory]
+)
+
+@common.Default(vv){
+    <table>
+        <tr>
+            <th>Category-Name</th>
+            <th>Slug</th>
+            <th>Color</th>
+        </tr>
+            @for(category  <-  list){
+                <tr>
+                    <td>@category.name</td>
+                    <td>@category.slug</td>
+                    <td class="color">@category.color.toString</td>
+                </tr>
+            }
+    </table>
+<p class=register><a href="@controllers.routes.TodoCategoryController.store()">Categoryを登録する</a></p>
+<a href="@controllers.routes.HomeController.index">Home画面に戻る</a>
+
+}

@@ -1,37 +1,36 @@
-/**
-  * This is a sample of Todo Application.
-  * 
-  */
-
 package lib.persistence
 
 import scala.concurrent.Future
 import ixias.persistence.SlickRepository
-import lib.model.User
+import lib.model
+import lib.model.TodoCategory
 import slick.jdbc.JdbcProfile
 
 // UserRepository: UserTableへのクエリ発行を行うRepository層の定義
 //~~~~~~~~~~~~~~~~~~~~~~
-case class UserRepository[P <: JdbcProfile]()(implicit val driver: P)
-  extends SlickRepository[User.Id, User, P]
-  with db.SlickResourceProvider[P] {
+case class TodoCategoryRepository[P <: JdbcProfile]()(implicit val driver: P)
+  extends SlickRepository[TodoCategory.Id, TodoCategory, P]
+    with db.SlickResourceProvider[P] {
 
   import api._
 
-  /**
-    * Get User Data
-    */
+
   def get(id: Id): Future[Option[EntityEmbeddedId]] =
-    RunDBAction(UserTable, "slave") { _
+    RunDBAction(TodoCategoryTable, "slave") { _
       .filter(_.id === id)
       .result.headOption
-  }
+    }
+
+  def getAll(): Future[List[TodoCategory]] =
+    RunDBAction(TodoCategoryTable, "slave") { _
+      .to[List].result
+    }
 
   /**
-    * Add User Data
+   * Add User Data
    */
   def add(entity: EntityWithNoId): Future[Id] =
-    RunDBAction(UserTable) { slick =>
+    RunDBAction(TodoCategoryTable) { slick =>
       slick returning slick.map(_.id) += entity.v
     }
 
@@ -39,7 +38,7 @@ case class UserRepository[P <: JdbcProfile]()(implicit val driver: P)
    * Update User Data
    */
   def update(entity: EntityEmbeddedId): Future[Option[EntityEmbeddedId]] =
-    RunDBAction(UserTable) { slick =>
+    RunDBAction(TodoCategoryTable) { slick =>
       val row = slick.filter(_.id === entity.id)
       for {
         old <- row.result.headOption
@@ -54,7 +53,7 @@ case class UserRepository[P <: JdbcProfile]()(implicit val driver: P)
    * Delete User Data
    */
   def remove(id: Id): Future[Option[EntityEmbeddedId]] =
-    RunDBAction(UserTable) { slick =>
+    RunDBAction(TodoCategoryTable) { slick =>
       val row = slick.filter(_.id === id)
       for {
         old <- row.result.headOption
