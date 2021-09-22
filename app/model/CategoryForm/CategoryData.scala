@@ -1,8 +1,8 @@
 package model.CategoryForm
 
-import scala.util.matching.Regex
 import play.api.data.Forms._
 import play.api.data._
+import play.api.data.validation._
 
 //  新規登録用Formのケースクラスと、マッピングさせた変数
 case class CategoryData(
@@ -12,10 +12,19 @@ case class CategoryData(
 )
 
 object CategoryData{
+  val constraint:Constraint[String] = Constraint("Alphabet or Number"){ slug =>
+    val numOrAlp = """\w*""".r
+    val matchResult = numOrAlp.findFirstIn(slug)
+    matchResult match {
+      case None    =>  Invalid(ValidationError("error.alphabetOrNumbers"))
+      case Some(s) =>  if(s == slug) Valid else Invalid(ValidationError("error.alphabetOrNumbers"))
+    }
+  }
+
   val categoryForm = Form(
     mapping(
       "name"        ->  nonEmptyText,
-      "slug"        ->  nonEmptyText,
+      "slug"        ->  nonEmptyText.verifying(constraint),
       "color"       ->  nonEmptyText
     )(CategoryData.apply)(CategoryData.unapply)
   )

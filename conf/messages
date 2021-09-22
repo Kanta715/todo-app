@@ -1,3 +1,4 @@
 # https://www.playframework.com/documentation/latest/ScalaI18N
 
-error.required=入力が必須の項目です
+error.required = 入力が必須の項目です
+error.alphabetOrNumbers= 英数字のみで入力してください

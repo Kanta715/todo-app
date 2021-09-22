@@ -1,0 +1,27 @@
+@import model.CategoryForm.CategoryData
+
+@(vv:     model.TodoCategoryVV.ViewValueCategoryStore)(implicit request: RequestHeader,  messageProvider: MessagesProvider)
+
+@common.Default(vv){
+    @helper.form(action = controllers.routes.TodoCategoryController.store()) {
+    @helper.CSRF.formField
+
+            @*   １行だけのテキスト  *@
+            @helper.inputText(vv.form("name"),
+                'size -> 50,    '_label -> "カテゴリー名",     '_showConstrains -> false,  'placeholder -> "カテゴリー名を入力"
+            )
+            @*   英数字のみのスラッグ名を入力    *@
+            @helper.inputText(vv.form("slug"),
+                'size -> 50,     '_label -> "スラッグ名",    '_showConstrains -> false,    'placeholder -> "slug名を英数字のみで入力"
+            )
+            @*   色を選択     *@
+            @helper.inputRadioGroup(vv.form("color"),
+                options = Seq("赤" -> "赤", "青" -> "青", "緑" -> "緑"),
+                '_label -> "開発カテゴリ"
+            )
+
+            <p><input type="submit" value="Categoryを登録"></p>
+            <a href="/category/list">Category一覧に戻る</a>
+}
+
+}

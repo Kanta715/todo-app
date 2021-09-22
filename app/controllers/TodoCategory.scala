@@ -1,5 +1,7 @@
 package controllers
 
+import lib.model.TodoCategory
+
 import scala.concurrent.duration.Duration
 import play.api.i18n.I18nSupport
 import play.api.data.Form
@@ -12,6 +14,8 @@ import scala.concurrent.Future
 import scala.util.{Failure, Success}
 import model.TodoForm.TodoData._
 import lib.persistence.onMySQL.TodoCategoryRepository
+import model.CategoryForm.CategoryData
+import model.CategoryForm.CategoryData.categoryForm
 
 import scala.concurrent.Await
 import scala.concurrent.ExecutionContext
@@ -35,4 +39,38 @@ class TodoCategoryController @Inject()(val controllerComponents: ControllerCompo
     }
   }
 
+  def register() = Action { implicit request =>
+    val vv = ViewValueCategoryStore(
+      "Category登録",
+      Seq("category/categoryList.css"),
+      Seq("category/categoryList.js"),
+      categoryForm
+    )
+    Ok(views.html.category.Store(vv))
+  }
+
+  def store() = Action.async { implicit request =>
+    categoryForm.bindFromRequest().fold(
+      (formWithErrors: Form[CategoryData]) => {
+        val vv = ViewValueCategoryStore(
+          "TODO登録",
+          Seq("todo/store.css"),
+          Seq("todo/todoList.js"),
+          formWithErrors
+        )
+        Future.successful(BadRequest(views.html.category.Store(vv)))
+      },
+      (categoryData: CategoryData) => {
+        for{
+          color     <- Future(if(categoryData.color == "赤") 1 else if(categoryData.color == "青") 2 else 3)
+          category  <- Future(TodoCategory(categoryData.name, categoryData.slug, color.toShort))
+          _         <- TodoCategoryRepository.add(category)
+        } yield {
+          Redirect("/category/list")
+        }
+      }
+    )
+
+
+  }
 }
