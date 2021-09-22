@@ -25,12 +25,12 @@ class TodoCategoryController @Inject()(val controllerComponents: ControllerCompo
   def list() = Action.async { implicit request =>
     for{
       list  <-  TodoCategoryRepository.getAll()
-      vv    <-  Future.successful{ViewValueCategoryList(
-                  "Category-List",
-                  Seq("category/categoryList.css"),
-                  Seq("category/categoryList.js")
-                )}
     } yield {
+      val vv = ViewValueCategoryList(
+        "Category-List",
+        Seq("category/categoryList.css"),
+        Seq("category/categoryList.js")
+      )
       Ok(views.html.category.CategoryList(vv, list))
     }
   }

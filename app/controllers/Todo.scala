@@ -27,17 +27,15 @@ import scala.concurrent.ExecutionContext
 class TodoController @Inject()(val controllerComponents: ControllerComponents)(implicit ec: ExecutionContext)
   extends BaseController with I18nSupport {
 
-  def todoList() = Action.async { implicit request =>
+  def list() = Action.async { implicit request =>
     for{
       todoInfo  <-  TodoRepository.getAll()
-      vv        <-  Future.successful{
-        ViewValueList(
-          title   = "TODO-List",
-          cssSrc  = Seq("todo/todoList.css"),
-          jsSrc   = Seq("todo/todoList.js")
-        )
-      }
     } yield {
+      val vv = ViewValueList(
+        title   = "TODO-List",
+        cssSrc  = Seq("todo/todoList.css"),
+        jsSrc   = Seq("todo/todoList.js")
+      )
       Ok(views.html.todo.TodoList(vv, todoInfo))
     }
   }
@@ -55,25 +53,21 @@ class TodoController @Inject()(val controllerComponents: ControllerComponents)(i
   def store() = Action.async { implicit request =>
     todoForm.bindFromRequest().fold(
       (formWithErrors: Form[TodoForm.TodoData]) => {
-        for {
-          vv <- Future{ViewValueStore(
-            title   = "TODO登録",
-            cssSrc  = Seq("todo/store.css"),
-            jsSrc   = Seq("todo/todoList.js"),
-            form    = formWithErrors
-          )
-          }
-        } yield BadRequest(views.html.todo.Store(vv))
+        val vv = ViewValueStore(
+          title   = "TODO登録",
+          cssSrc  = Seq("todo/store.css"),
+          jsSrc   = Seq("todo/todoList.js"),
+          form    = formWithErrors
+        )
+        Future.successful(BadRequest(views.html.todo.Store(vv)))
       },
       (todoFormData: TodoForm.TodoData) => {
         for {
-          cId       <- Future{
-            if(todoFormData.categoryName == "フロントエンド") 1 else if(todoFormData.categoryName == "バックエンド") 2 else 3
-          }
-          todoTable <- Future.successful(Todo(cId,  todoFormData.title,   todoFormData.body,  IS_INACTIVE))
+          cId       <- Future(if(todoFormData.categoryName == "フロントエンド") 1 else if(todoFormData.categoryName == "バックエンド") 2 else 3)
+          todoTable <- Future(Todo(cId,  todoFormData.title,   todoFormData.body,  IS_INACTIVE))
           _         <- TodoRepository.add(todoTable)
         } yield {
-          Redirect("/todo/todoList")
+          Redirect("/todo/list")
         }
       }
     )
@@ -83,9 +77,9 @@ class TodoController @Inject()(val controllerComponents: ControllerComponents)(i
     for{
       todoList   <- TodoRepository.getAll()
     } yield {
-      val todoInfo = todoList.find(v => v.id.get.toInt == Id).get
+      val todoInfo = todoList.find(v => v.id.getOrElse(0) == Id)
       todoInfo match {
-        case todo: Todo =>
+        case Some(todo) =>
           val c = todo.category_id match {
             case 1 => "フロントエンド"
             case 2 => "バックエンド"
@@ -98,7 +92,7 @@ class TodoController @Inject()(val controllerComponents: ControllerComponents)(i
             form    = todoEditForm.fill(TodoForm.TodoEditData(todo.title,  todo.body, todo.state.name,  c))
           )
           Ok(views.html.todo.Edit(vv, todo.id.get))
-        case _  => Redirect("todo/todoList")
+        case None  => Redirect("/todo/list")
       }
     }
 
@@ -107,39 +101,32 @@ class TodoController @Inject()(val controllerComponents: ControllerComponents)(i
   def update(Id:  Int) = Action.async { implicit request =>
     todoEditForm.bindFromRequest().fold(
       (formWithErrors: Form[TodoForm.TodoEditData]) => {
-        for {
-          vv <- Future.successful{ViewValueHome(
+        val vv = ViewValueHome(
             title = "TODO登録",
             cssSrc = Seq("todo/edit.css"),
             jsSrc = Seq("todo/todoList.js")
-          )}
-        } yield {
-          BadRequest(views.html.error.page404(vv))
-        }
+        )
+        Future.successful(BadRequest(views.html.error.page404(vv)))
       },
       (todoFormData: TodoForm.TodoEditData) => {
         for{
-          vv <- Future{ViewValueHome(
+          todoList       <-  TodoRepository.getAll()
+          todo           <-  Future(todoList.find(v => v.id.getOrElse(0) == Id))
+          todoInfo       <-  TodoRepository.get(todo.get.id.get)
+          editedTodo     <-  Future{
+            val cId = if (todoFormData.categoryName == "フロントエンド") 1 else if (todoFormData.categoryName == "バックエンド") 2 else 3
+            val state = if (todoFormData.stateName == "TODO") IS_INACTIVE else if (todoFormData.stateName == "実行中") IS_ACTIVE else DONE
+            todoInfo.get.map(_.copy(title = todoFormData.title, body = todoFormData.body, state = state, category_id = cId))
+          }
+          updateTodo     <- TodoRepository.update(editedTodo)
+        } yield {
+          val vv = ViewValueHome(
             title = "TODO登録",
             cssSrc = Seq("todo/edit.css"),
             jsSrc = Seq("todo/todoList.js")
-          )}
-          todoList       <-  TodoRepository.getAll()
-          editedTodo     <-  Future.successful {
-            val todo        = todoList.find(v => v.id.get.toInt == Id)
-            val cId         = if (todoFormData.categoryName == "フロントエンド") 1 else if (todoFormData.categoryName == "バックエンド") 2 else 3
-            val state       = if (todoFormData.stateName == "TODO") IS_INACTIVE else if (todoFormData.stateName == "実行中") IS_ACTIVE else DONE
-            val todoInfo    = TodoRepository.get(todo.get.id.get)
-            val todoRecord  = Await.ready(todoInfo, Duration.Inf)
-            val tdr         = todoRecord.value.get match {
-              case Success(value) =>  value.get
-            }
-            tdr.map(_.copy(title = todoFormData.title, body = todoFormData.body, state = state, category_id = cId))
-          }
-          todo           <- TodoRepository.update(editedTodo)
-        } yield {
-          todo match {
-            case Some(t) =>  Redirect("/todo/todoList")
+          )
+          updateTodo match {
+            case Some(t) =>  Redirect("/todo/list")
             case None    =>  Ok(views.html.error.page404(vv))
           }
         }
@@ -149,26 +136,20 @@ class TodoController @Inject()(val controllerComponents: ControllerComponents)(i
 
   def delete(Id:  Int) = Action.async { implicit request =>
     for{
-      vv <- Future{ViewValueHome(
-        title = "TODO登録",
-        cssSrc = Seq("todo/edit.css"),
-        jsSrc = Seq("todo/todoList.js")
-      )}
       todoList <-  TodoRepository.getAll()
-      todo     <-  Future.successful{
-        val todoInfo  = todoList.find(v => v.id.get.toInt == Id)
-        todoInfo match {
-          case None => 1
-          case Some(info) =>
-            val deleteTodo = TodoRepository.remove(info.id.get)
-            Await.ready(deleteTodo, Duration.Inf)
-            0
-        }
-      }
+      todo     <-  Future(todoList.find(v => v.id.get.toInt == Id))
     } yield {
       todo match {
-        case 1  =>  BadRequest(views.html.error.page404(vv))
-        case 0  =>  Redirect("/todo/todoList")
+        case None         =>
+          val vv = ViewValueHome(
+            title = "TODO登録",
+            cssSrc = Seq("todo/edit.css"),
+            jsSrc = Seq("todo/todoList.js")
+          )
+          BadRequest(views.html.error.page404(vv))
+        case Some(value)  =>
+          TodoRepository.remove(value.id.get)
+          Redirect("/todo/list")
       }
     }
 
