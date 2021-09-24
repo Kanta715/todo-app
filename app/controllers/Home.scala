@@ -6,18 +6,13 @@
 
 package controllers
 
-
-import play.api.i18n.I18nSupport
-
 import javax.inject._
 import play.api.mvc._
-import model._
 
-
+import model.ViewValueHome
 
 @Singleton
-class HomeController @Inject()(val controllerComponents: ControllerComponents)
-  extends BaseController with I18nSupport {
+class HomeController @Inject()(val controllerComponents: ControllerComponents) extends BaseController {
 
   def index() = Action { implicit req =>
     val vv = ViewValueHome(
@@ -27,5 +22,4 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents)
     )
     Ok(views.html.Home(vv))
   }
-
 }
