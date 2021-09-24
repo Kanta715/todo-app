@@ -98,5 +98,15 @@ h1 {
     font-size:  30px;
 }
 
+table .color1 {
+    background-color: red;
+}
 
+table .color2 {
+    background-color: blue;
+}
+
+table .color3 {
+    background-color: green;
+}
 

@@ -8,7 +8,7 @@ case class TodoEditData(
      title:        String,
      body:         String,
      stateName:    String,
-     categoryName: String
+     categoryName: Int
 )
 
 object TodoEditData{
@@ -17,7 +17,7 @@ object TodoEditData{
       "title"         ->  nonEmptyText,
       "body"          ->  text,
       "stateName"     ->  text,
-      "categoryName"  ->  text
+      "categoryName"  ->  number
     )(TodoEditData.apply)(TodoEditData.unapply)
   )
 }

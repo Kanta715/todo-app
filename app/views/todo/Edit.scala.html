@@ -28,13 +28,13 @@ id:     Todo.Id
 
         @*   フロント、バック、インフラのみなのでラジオ式     *@
         @helper.inputRadioGroup(vv.form("categoryName"),
-        options = Seq("フロントエンド" -> "フロントエンド", "バックエンド" -> "バックエンド", "インフラ" -> "インフラ"),
+        options = Seq("1" -> "フロントエンド", "2" -> "バックエンド", "3" -> "インフラ"),
         '_label -> "開発カテゴリ"
         )
 
         <p><input type="submit" value="Todo編集完了"></p>
 
-        <a href="/todo/todoList">一覧画面に戻る</a>
+        <a href="/todo/list">一覧画面に戻る</a>
 
     }
 }

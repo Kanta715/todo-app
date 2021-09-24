@@ -63,8 +63,8 @@ class TodoController @Inject()(val controllerComponents: ControllerComponents)(i
       },
       (todoFormData: TodoForm.TodoData) => {
         for {
-          cId       <- Future(if(todoFormData.categoryName == "フロントエンド") 1 else if(todoFormData.categoryName == "バックエンド") 2 else 3)
-          todoTable <- Future(Todo(cId,  todoFormData.title,   todoFormData.body,  IS_INACTIVE))
+          cId       <- Future.successful(if(todoFormData.categoryName == "フロントエンド") 1 else if(todoFormData.categoryName == "バックエンド") 2 else 3)
+          todoTable <- Future.successful(Todo(cId,  todoFormData.title,   todoFormData.body,  IS_INACTIVE))
           _         <- TodoRepository.add(todoTable)
         } yield {
           Redirect("/todo/list")
@@ -80,16 +80,11 @@ class TodoController @Inject()(val controllerComponents: ControllerComponents)(i
       val todoInfo = todoList.find(v => v.id.getOrElse(0) == Id)
       todoInfo match {
         case Some(todo) =>
-          val c = todo.category_id match {
-            case 1 => "フロントエンド"
-            case 2 => "バックエンド"
-            case 3 => "インフラ"
-          }
           val vv  = ViewValueEdit(
             title   = "TODO編集",
             cssSrc  = Seq("todo/store.css"),
             jsSrc   = Seq("todo/todoList.js"),
-            form    = todoEditForm.fill(TodoForm.TodoEditData(todo.title,  todo.body, todo.state.name,  c))
+            form    = todoEditForm.fill(TodoForm.TodoEditData(todo.title,  todo.body, todo.state.name,  todo.category_id))
           )
           Ok(views.html.todo.Edit(vv, todo.id.get))
         case None  => Redirect("/todo/list")
@@ -112,9 +107,8 @@ class TodoController @Inject()(val controllerComponents: ControllerComponents)(i
         for{
           todoInfo       <-  TodoRepository.get(Todo.Id(Id.toLong))
           editedTodo     <-  Future{
-            val cId = if (todoFormData.categoryName == "フロントエンド") 1 else if (todoFormData.categoryName == "バックエンド") 2 else 3
             val state = if (todoFormData.stateName == "TODO") IS_INACTIVE else if (todoFormData.stateName == "実行中") IS_ACTIVE else DONE
-            todoInfo.get.map(_.copy(title = todoFormData.title, body = todoFormData.body, state = state, category_id = cId))
+            todoInfo.get.map(_.copy(title = todoFormData.title, body = todoFormData.body, state = state, category_id = todoFormData.categoryName))
           }
           updateTodo     <- TodoRepository.update(editedTodo)
         } yield {
