@@ -1,8 +1,11 @@
 @import lib.model.Todo
+@import lib.model.Todo.Status._
+@import lib.model.TodoCategory
 
 @(
 vv:     model.TodoVV.ViewValueEdit,
-id:     Todo.Id
+id:     Todo.Id,
+list:   List[String]
 )(implicit request: RequestHeader,  messageProvider: MessagesProvider)
 
 @common.Default(vv){
@@ -22,13 +25,17 @@ id:     Todo.Id
 
         @*  TODOの状況  *@
         @helper.inputRadioGroup(vv.form("stateName"),
-        options = Seq("未着手" -> "TODO",  "実行中" -> "実行中",  "完了" -> "完了"),
+        options = Seq(Todo.Status.IS_INACTIVE.name -> Todo.Status.IS_INACTIVE.name,  Todo.Status.IS_ACTIVE.name -> Todo.Status.IS_ACTIVE.name,  Todo.Status.DONE.name -> Todo.Status.DONE.name),
         '_label -> "TODO状況"
         )
 
         @*   フロント、バック、インフラのみなのでラジオ式     *@
         @helper.inputRadioGroup(vv.form("categoryName"),
-        options = Seq("1" -> "フロントエンド", "2" -> "バックエンド", "3" -> "インフラ"),
+        options = for{
+            cName <- list
+            } yield {
+            list.indexOf(cName).toString -> cName
+        },
         '_label -> "開発カテゴリ"
         )
 
