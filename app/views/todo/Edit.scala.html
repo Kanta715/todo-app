@@ -3,9 +3,10 @@
 @import lib.model.TodoCategory
 
 @(
-vv:     model.TodoVV.ViewValueEdit,
-id:     Todo.Id,
-list:   List[String]
+vv:            model.TodoVV.ViewValueEdit,
+id:            Todo.Id,
+list:          List[String],
+categoryList:  List[TodoCategory]
 )(implicit request: RequestHeader,  messageProvider: MessagesProvider)
 
 @common.Default(vv){
@@ -32,9 +33,10 @@ list:   List[String]
         @*   フロント、バック、インフラのみなのでラジオ式     *@
         @helper.inputRadioGroup(vv.form("categoryName"),
         options = for{
-            cName <- list
+            cName  <- list
+            cId    <- categoryList.find(_.name == cName)
             } yield {
-            list.indexOf(cName).toString -> cName
+                cId.color.code.toString -> cName
         },
         '_label -> "開発カテゴリ"
         )

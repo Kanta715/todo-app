@@ -52,9 +52,9 @@ class TodoCategoryController @Inject()(val controllerComponents: ControllerCompo
         Future.successful(BadRequest(views.html.category.Store(vv)))
       },
       (categoryData: CategoryData) => {
+        val color    = if(categoryData.color == 1) TodoCategory.Color.RED else if(categoryData.color == 2)TodoCategory.Color.BLUE else TodoCategory.Color.GREEN
+        val category = TodoCategory(categoryData.name, categoryData.slug, color)
         for{
-          color     <- Future(if(categoryData.color == "赤") 1 else if(categoryData.color == "青") 2 else 3)
-          category  <- Future(TodoCategory(categoryData.name, categoryData.slug, color.toShort))
           _         <- TodoCategoryRepository.add(category)
         } yield {
           Redirect("/category/list")

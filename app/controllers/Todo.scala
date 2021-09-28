@@ -26,16 +26,15 @@ class TodoController @Inject()(val controllerComponents: ControllerComponents)(i
   extends BaseController with I18nSupport {
 
   def list() = Action.async { implicit request =>
-    for{
-      todoInfo     <-  TodoRepository.getAll()
-      categoryInfo <-  TodoCategoryRepository.getAll()
+      val todoInfo     =  TodoRepository.getAll()
+      val categoryInfo =  TodoCategoryRepository.getAll()
+    for {
+      todo      <-  todoInfo
+      category  <-  categoryInfo
     } yield {
       val vv = ViewValueList(
-        "TODO-List",
-        Seq("todo/todoList.css"),
-        Seq("todo/todoList.js"),
-        todoInfo,
-        categoryInfo
+        todo,
+        category
       )
       Ok(views.html.todo.TodoList(vv))
     }
@@ -45,7 +44,7 @@ class TodoController @Inject()(val controllerComponents: ControllerComponents)(i
     val vv = ViewValueStore(
       title   = "TODO登録",
       cssSrc  = Seq("todo/store.css"),
-      jsSrc   = Seq("todo/todoList.js"),
+      jsSrc   = Seq("main.js"),
       form    = todoForm
     )
     Ok(views.html.todo.Store(vv))
@@ -57,7 +56,7 @@ class TodoController @Inject()(val controllerComponents: ControllerComponents)(i
         val vv = ViewValueStore(
           title   = "TODO登録",
           cssSrc  = Seq("todo/store.css"),
-          jsSrc   = Seq("todo/todoList.js"),
+          jsSrc   = Seq("main.js"),
           form    = formWithErrors
         )
         Future.successful(BadRequest(views.html.todo.Store(vv)))
@@ -75,22 +74,23 @@ class TodoController @Inject()(val controllerComponents: ControllerComponents)(i
   }
 
   def edit(Id:  Int) = Action.async { implicit request =>
+    val categoryList = TodoCategoryRepository.getAll()
+    val todoInfo     = TodoRepository.get(Todo.Id(Id.toLong))
     for{
-      todoInfo     <- TodoRepository.get(Todo.Id(Id.toLong))
-      todo         =  todoInfo.get
-      categoryList <- TodoCategoryRepository.getAll()
+      todo         <- todoInfo
+      category     <- categoryList
     } yield {
-      val categoryName  = for (name <- categoryList.map(_.name)) yield name
+      val categoryName  = for (name <- category.map(_.name)) yield name
       val nameList      = categoryName.foldLeft(List(): List[String])((x,y) => if(x.contains(y)) x else x :+ y)
       todo match {
-        case Entity(v) =>
+        case Some(Entity(v)) =>
           val vv = ViewValueEdit(
-            title = "TODO編集",
+            title  = "TODO編集",
             cssSrc = Seq("todo/store.css"),
-            jsSrc = Seq("todo/todoList.js"),
-            form = todoEditForm.fill(TodoForm.TodoEditData(v.title, v.body, v.state.name, v.category_id))
+            jsSrc  = Seq("main.js"),
+            form   = todoEditForm.fill(TodoForm.TodoEditData(v.title, v.body, v.state.name, v.category_id))
           )
-          Ok(views.html.todo.Edit(vv, v.id.get, nameList))
+          Ok(views.html.todo.Edit(vv, v.id.get, nameList, category))
         case _  => Redirect("/todo/list")
       }
     }
@@ -101,9 +101,9 @@ class TodoController @Inject()(val controllerComponents: ControllerComponents)(i
     todoEditForm.bindFromRequest().fold(
       (formWithErrors: Form[TodoForm.TodoEditData]) => {
         val vv = ViewValueHome(
-            title = "TODO登録",
+            title  = "TODO登録",
             cssSrc = Seq("todo/edit.css"),
-            jsSrc = Seq("todo/todoList.js")
+            jsSrc  = Seq("main.js")
         )
         Future.successful(BadRequest(views.html.error.page404(vv)))
       },
@@ -117,9 +117,9 @@ class TodoController @Inject()(val controllerComponents: ControllerComponents)(i
           updateTodo     <- TodoRepository.update(editedTodo)
         } yield {
           val vv = ViewValueHome(
-            title = "TODO登録",
-            cssSrc = Seq("todo/edit.css"),
-            jsSrc = Seq("todo/todoList.js")
+            title  = "Home",
+            cssSrc = Seq("main.css"),
+            jsSrc  = Seq("main.js")
           )
           updateTodo match {
             case Some(t) =>  Redirect("/todo/list")
@@ -137,9 +137,9 @@ class TodoController @Inject()(val controllerComponents: ControllerComponents)(i
       todo match {
         case None         =>
           val vv = ViewValueHome(
-            title = "TODO登録",
+            title  = "TODO登録",
             cssSrc = Seq("todo/edit.css"),
-            jsSrc = Seq("todo/todoList.js")
+            jsSrc  = Seq("main.js")
           )
           BadRequest(views.html.error.page404(vv))
         case Some(value)  =>

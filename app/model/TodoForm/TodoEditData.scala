@@ -18,7 +18,7 @@ object TodoEditData{
       "title"         ->  nonEmptyText,
       "body"          ->  text,
       "stateName"     ->  text,
-      "categoryId"  ->  number
+      "categoryId"    ->  number
     )(TodoEditData.apply)(TodoEditData.unapply)
   )
 }

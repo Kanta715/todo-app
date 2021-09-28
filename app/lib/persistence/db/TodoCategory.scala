@@ -39,14 +39,14 @@ case class TodoCategoryTable[P <: JdbcProfile]()(implicit val driver: P)
 
     /* @3 */ def slug = column[String]("slug", O.Utf8Char64)
 
-    /* @4 */ def color = column[Short]("color", O.UInt8)
+    /* @4 */ def color = column[Color]("color", O.UInt8)
 
     /* @5 */ def updatedAt = column[LocalDateTime]("updated_at", O.TsCurrent)
 
     /* @6 */ def createdAt = column[LocalDateTime]("created_at", O.Ts)
 
     type TableElementTuple = (
-      Option[Id], String, String, Short, LocalDateTime, LocalDateTime
+      Option[Id], String, String, Color, LocalDateTime, LocalDateTime
       )
 
     // DB <=> Scala の相互のマッピング定義

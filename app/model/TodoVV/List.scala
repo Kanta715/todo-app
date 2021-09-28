@@ -12,3 +12,15 @@ case class ViewValueList(
     todoList:     List[Todo],
     categoryList: List[TodoCategory]
 ) extends ViewValueCommon
+
+object ViewValueList {
+  def apply(todoList: List[Todo], categoryList: List[TodoCategory]): ViewValueList ={
+    ViewValueList(
+      title         = "TODO-List",
+      cssSrc        = Seq("todo/todoList.css"),
+      jsSrc         = Seq("main.js"),
+      todoList      = todoList,
+      categoryList  = categoryList
+    )
+  }
+}

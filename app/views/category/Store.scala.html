@@ -1,4 +1,6 @@
 @import model.CategoryForm.CategoryData
+@import lib.model.TodoCategory
+@import lib.model.TodoCategory.Color._
 
 @(vv:     model.TodoCategoryVV.ViewValueCategoryStore)(implicit request: RequestHeader,  messageProvider: MessagesProvider)
 
@@ -16,8 +18,8 @@
             )
             @*   色を選択     *@
             @helper.inputRadioGroup(vv.form("color"),
-                options = Seq("赤" -> "赤", "青" -> "青", "緑" -> "緑"),
-                '_label -> "開発カテゴリ"
+                options = Seq(TodoCategory.Color.RED.code.toString -> TodoCategory.Color.RED.name, TodoCategory.Color.BLUE.code.toString -> TodoCategory.Color.BLUE.name, TodoCategory.Color.GREEN.code.toString -> TodoCategory.Color.GREEN.name),
+                '_label -> "背景色を選択"
             )
 
             <p><input type="submit" value="Categoryを登録"></p>

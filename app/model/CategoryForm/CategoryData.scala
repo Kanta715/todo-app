@@ -8,7 +8,7 @@ import play.api.data.validation._
 case class CategoryData(
   name:         String,
   slug:         String,
-  color:        String
+  color:        Int
 )
 
 object CategoryData{
@@ -25,7 +25,7 @@ object CategoryData{
     mapping(
       "name"        ->  nonEmptyText,
       "slug"        ->  nonEmptyText.verifying(constraint),
-      "color"       ->  nonEmptyText
+      "color"       ->  number
     )(CategoryData.apply)(CategoryData.unapply)
   )
 }
