@@ -2,7 +2,6 @@ package model.TodoForm
 
 import play.api.data.Forms._
 import play.api.data._
-import lib.model.Todo.Status
 
 //  編集用Formのケースクラスと、マッピングさせた変数
 case class TodoEditData(

@@ -15,28 +15,28 @@ categoryList:  List[TodoCategory]
 
         @*   １行だけのテキスト  *@
         @helper.inputText(vv.form("title"),
-        'size -> 100,    '_label -> "タイトル",     '_showConstrains -> false
+            'size -> 100,    '_label -> "タイトル",     '_showConstrains -> false
         )
 
         @*   複数行のテキスト(制約はない)    *@
         @helper.textarea(vv.form("body"),
-        'rows -> 6,     'cols -> 150,        '_label -> "内容",    '_showConstrains -> false,
-        'class -> "textarea"
+            'rows -> 6,     'cols -> 150,        '_label -> "内容",    '_showConstrains -> false,
+            'class -> "textarea"
         )
 
         @*  TODOの状況  *@
-        @helper.inputRadioGroup(vv.form("stateName"),
-        options = Seq(Todo.Status.IS_INACTIVE.name -> Todo.Status.IS_INACTIVE.name,  Todo.Status.IS_ACTIVE.name -> Todo.Status.IS_ACTIVE.name,  Todo.Status.DONE.name -> Todo.Status.DONE.name),
-        '_label -> "TODO状況"
+            @helper.inputRadioGroup(vv.form("stateName"),
+            options = Seq(Todo.Status.IS_INACTIVE.name -> Todo.Status.IS_INACTIVE.name,  Todo.Status.IS_ACTIVE.name -> Todo.Status.IS_ACTIVE.name,  Todo.Status.DONE.name -> Todo.Status.DONE.name),
+            '_label -> "TODO状況"
         )
 
         @*   フロント、バック、インフラのみなのでラジオ式     *@
-        @helper.inputRadioGroup(vv.form("categoryName"),
+        @helper.inputRadioGroup(vv.form("categoryId"),
         options = for{
-            cName  <- list
-            cId    <- categoryList.find(_.name == cName)
+            cName       <- list
+            category    <- categoryList.find(_.name == cName)
             } yield {
-                cId.color.code.toString -> cName
+                category.color.code.toString -> cName
         },
         '_label -> "開発カテゴリ"
         )

@@ -62,27 +62,3 @@ table td {
     border-bottom:  solid 1px lightyellow;
     padding-bottom: 10px;
 }
-
-.edit a {
-    text-decoration:    none;
-    font-size:          15px;
-    color:              #f5ffff;
-}
-
-.delete a {
-    text-decoration:    none;
-    font-size:          15px;
-    color:              red;
-}
-
-.赤 {
-    background-color:   red;
-}
-
-.青 {
-    background-color:   blue;
-}
-
-.緑 {
-    background-color:   green;
-}

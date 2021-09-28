@@ -36,7 +36,7 @@ vv:         model.TodoVV.ViewValueList
                         val category = vv.categoryList.find(_.color.code == todo.category_id).map(_.name)
                         category match {
                             case Some(name)  =>  name
-                            case None        =>  "カテゴリ名が見つかりません"
+                            case None        =>  "カテゴリが見つかりません"
                         }
                         }
                     </td>

@@ -40,30 +40,43 @@ class TodoController @Inject()(val controllerComponents: ControllerComponents)(i
     }
   }
 
-  def register() = Action { implicit request =>
-    val vv = ViewValueStore(
-      title   = "TODO登録",
-      cssSrc  = Seq("todo/store.css"),
-      jsSrc   = Seq("main.js"),
-      form    = todoForm
-    )
-    Ok(views.html.todo.Store(vv))
+  def register() = Action.async { implicit request =>
+    val todoList    =  TodoRepository.getAll()
+    val categoryList =  TodoCategoryRepository.getAll()
+    for{
+      todo     <- todoList
+      category <- categoryList
+    } yield {
+      val vv = ViewValueStore(
+        title   = "TODO登録",
+        cssSrc  = Seq("todo/store.css"),
+        jsSrc   = Seq("main.js"),
+        form    = todoForm
+      )
+      Ok(views.html.todo.Store(vv, todo, category))
+    }
   }
 
   def store() = Action.async { implicit request =>
     todoForm.bindFromRequest().fold(
       (formWithErrors: Form[TodoForm.TodoData]) => {
-        val vv = ViewValueStore(
-          title   = "TODO登録",
-          cssSrc  = Seq("todo/store.css"),
-          jsSrc   = Seq("main.js"),
-          form    = formWithErrors
-        )
-        Future.successful(BadRequest(views.html.todo.Store(vv)))
+        val todoList    =  TodoRepository.getAll()
+        val categoryList =  TodoCategoryRepository.getAll()
+        for{
+          todo     <- todoList
+          category <- categoryList
+        } yield {
+          val vv = ViewValueStore(
+            title   = "TODO登録",
+            cssSrc  = Seq("todo/store.css"),
+            jsSrc   = Seq("main.js"),
+            form    = todoForm
+          )
+          BadRequest(views.html.todo.Store(vv, todo, category))
+        }
       },
       (todoFormData: TodoForm.TodoData) => {
-        val cId       = if(todoFormData.categoryName == "フロントエンド") 1 else if(todoFormData.categoryName == "バックエンド") 2 else 3
-        val todoTable = Todo(cId,  todoFormData.title,   todoFormData.body,  IS_INACTIVE)
+        val todoTable = Todo(todoFormData.categoryId,  todoFormData.title,   todoFormData.body,  IS_INACTIVE)
         for {
           _         <- TodoRepository.add(todoTable)
         } yield {

@@ -1,6 +1,12 @@
 @import model.TodoForm.TodoData
+@import lib.model.Todo
+@import lib.model.TodoCategory
 
-@(vv:     model.TodoVV.ViewValueStore)(implicit request: RequestHeader,  messageProvider: MessagesProvider)
+@(
+vv:           model.TodoVV.ViewValueStore,
+todoList:     List[Todo],
+categoryList: List[TodoCategory]
+)(implicit request: RequestHeader,  messageProvider: MessagesProvider)
 
 @common.Default(vv){
     @helper.form(action = controllers.routes.TodoController.store()) {
@@ -17,8 +23,13 @@
         )
         @*   フロント、バック、インフラのみなのでラジオ式     *@
         @helper.inputRadioGroup(vv.form("categoryName"),
-            options = Seq("フロントエンド" -> "フロントエンド", "バックエンド" -> "バックエンド", "インフラ" -> "インフラ"),
-            '_label -> "開発カテゴリ"
+            options = for{
+                categoryName  <-  categoryList.map(_.name).distinct
+                category      <-  categoryList.find(_.name == categoryName)
+            } yield {
+                category.color.code.toString -> categoryName
+            },
+        '_label -> "開発カテゴリ"
         )
 
         <p><input type="submit" value="Todoを登録"></p>

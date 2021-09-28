@@ -11,12 +11,15 @@ list:   List[TodoCategory]
             <th>Category-Name</th>
             <th>Slug</th>
             <th>Color</th>
+            <th>Edit</th>
         </tr>
             @for(category  <-  list){
                 <tr>
                     <td>@category.name</td>
                     <td>@category.slug</td>
-                    <td class="color">@category.color.name</td>
+                    <td class="@category.color.name">@category.color.name</td>
+                    <td class="edit"><a href="@controllers.routes.TodoCategoryController.edit(category.id.get.toInt)">このCategoryを編集</a></td>
+                    <td class="delete"><a href="@controllers.routes.TodoCategoryController.delete(category.id.get.toInt)">このCategoryを削除</a></td>
                 </tr>
             }
     </table>

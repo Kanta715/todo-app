@@ -8,7 +8,7 @@ import play.api.data._
 case class TodoData(
      title:        String,
      body:         String,
-     categoryName: String
+     categoryId:   Int
 )
 
 object TodoData{
@@ -16,7 +16,7 @@ object TodoData{
     mapping(
       "title"         ->  nonEmptyText,
       "body"          ->  text,
-      "categoryName"  ->  text
+      "categoryName"  ->  number
     )(TodoForm.TodoData.apply)(TodoForm.TodoData.unapply)
   )
 }
