@@ -27,7 +27,7 @@ categoryList: List[TodoCategory]
                 categoryName  <-  categoryList.map(_.name).distinct
                 category      <-  categoryList.find(_.name == categoryName)
             } yield {
-                category.color.code.toString -> categoryName
+                category.id.get.toString -> categoryName
             },
         '_label -> "開発カテゴリ"
         )

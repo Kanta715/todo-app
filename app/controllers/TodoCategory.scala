@@ -9,7 +9,7 @@ import javax.inject._
 import play.api.mvc._
 
 import scala.concurrent.Future
-import lib.persistence.onMySQL.TodoCategoryRepository
+import lib.persistence.onMySQL.{TodoCategoryRepository, TodoRepository}
 import model.CategoryForm.CategoryData
 import model.CategoryForm.CategoryData.categoryForm
 
@@ -82,6 +82,7 @@ class TodoCategoryController @Inject()(val controllerComponents: ControllerCompo
           )
           Ok(views.html.category.Edit(vv, v.id.get))
         }
+        case _ =>  Redirect("/category/list")
       }
 
     }
@@ -114,7 +115,7 @@ class TodoCategoryController @Inject()(val controllerComponents: ControllerCompo
 
   def delete(id:  Int) = Action.async { implicit request =>
     for {
-      _   <-  TodoCategoryRepository.remove(TodoCategory.Id(id.toLong))
+      _  <-  TodoCategoryRepository.remove(TodoCategory.Id(id.toLong))
     } yield {
       Redirect("/category/list")
     }
