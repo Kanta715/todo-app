@@ -1,6 +1,8 @@
 body {
-  margin:   0;
-  padding:  0;
+  margin:           0;
+  padding:          0;
+  background-color: white;
+  font-family:    'Bitter', serif;
 }
 
 .header {
@@ -22,12 +24,12 @@ body {
 }
 
 .main {
-  width:      980px;
-  margin:     100px auto;
-  padding:    100px;
-  box-shadow: 0 0 4px gray;
-  position:   relative;
-  background-color: #5f9ea0;
+  width:            980px;
+  margin:           100px auto;
+  padding:          100px;
+  box-shadow:       0 0 4px gray;
+  position:         relative;
+  background-color: #e6e6fa;
 }
 
 .success-message {
@@ -35,54 +37,108 @@ body {
   text-align:  center;
 }
 
+
 /******* フォームのinfoを非表示に *******/
 .info {
   display: none;
 }
 
-h1{
+h1 {
     text-align:     center;
-    font-size:      70px;
+    font-size:      50px;
 }
 
-table {
-    table-layout:   fixed;
-    width:          100%;
-    text-align:     center;
+.home {
+    border-radius:      10px;
+    border:             0px none;
+    background-color:   #FFFF00;
+    opacity:            0.6;
+    padding:            20px;
+    display:            inline;
 }
 
-table th {
-    font-size:  30px;
-    color:      khaki;
-    padding:    15px    0  30px 0;
+.register {
+    border-radius:      10px;
+    border:             0px none;
+    background-color:   #FF0000;
+    opacity:            0.6;
+    padding:            20px;
+    float:              right;
 }
 
-table td {
+.list {
+    border:             solid 1px black;
+    border-style:       groove;
+    margin:             20px;
+    padding:            10px;
+    border-radius:      20px;
+    background-color:   white;
+    text-align:         left;
+    clear:              both;
+}
+
+a {
+    text-decoration:    none;
+    font-size:          15px;
+    color:              black;
+}
+
+.name {
     font-size:      20px;
-    border-bottom:  solid 1px lightyellow;
-    padding-bottom: 10px;
+    font-family:    'Bitter', serif;
 }
 
-.edit a {
-    text-decoration:    none;
-    font-size:          15px;
-    color:              #f5ffff;
+.slug {
+    display:            inline-block;
+    background-color:   #99FFFF;
+    padding:            10px;
+    border:             0px none;
+    border-radius:      10px;
+    margin:             0;
 }
 
-.delete a {
-    text-decoration:    none;
-    font-size:          15px;
-    color:              red;
+.赤{
+    padding:            10px;
+    border-radius:      10px;
+    background-color:   #CC0099;
+    display:            inline-block;
+    margin:             0;
 }
 
-.赤 {
-    background-color:   red;
+.青{
+    padding:            10px;
+    border-radius:      10px;
+    background-color:   #66FFFF;
+    display:            inline-block;
+    margin:             0;
 }
 
-.青 {
-    background-color:   blue;
+.緑{
+    padding:            10px;
+    border-radius:      10px;
+    background-color:   #99FF00;
+    display:            inline-block;
+    margin:             0;
 }
 
-.緑 {
-    background-color:   green;
+.edit {
+    border-radius:      10px;
+    border:             0px none;
+    background-color:   #800000;
+    opacity:            0.6;
+    padding:            10px;
+    display:            inline-block;
+    float:              right;
+    margin-right:       5px;
+}
+
+.delete {
+    border-radius:      10px;
+    border:             0px none;
+    background-color:   #FF0000;
+    opacity:            0.6;
+    padding:            10px;
+    color:              white;
+    display:            inline-block;
+    float:              right;
 }

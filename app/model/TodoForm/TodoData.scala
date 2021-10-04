@@ -1,5 +1,6 @@
 package model.TodoForm
 
+import lib.model.TodoCategory
 import model.TodoForm
 import play.api.data.Forms._
 import play.api.data._
@@ -8,7 +9,7 @@ import play.api.data._
 case class TodoData(
      title:        String,
      body:         String,
-     categoryId:   Int
+     categoryId:   TodoCategory.Id
 )
 
 object TodoData{
@@ -16,7 +17,7 @@ object TodoData{
     mapping(
       "title"         ->  nonEmptyText,
       "body"          ->  text,
-      "categoryId"    ->  number
+      "categoryId"    ->  longNumber.transform(TodoCategory.Id.apply, TodoCategory.Id.unwrap)
     )(TodoForm.TodoData.apply)(TodoForm.TodoData.unapply)
   )
 }

@@ -15,6 +15,7 @@ import lib.persistence.onMySQL.TodoCategoryRepository
 import scala.concurrent.Future
 import model.TodoForm.TodoData._
 import lib.persistence.onMySQL.TodoRepository
+import model.TodoForm.TodoEditData
 import model.TodoVV._
 
 import scala.concurrent.ExecutionContext
@@ -73,13 +74,13 @@ class TodoController @Inject()(val controllerComponents: ControllerComponents)(i
             title   = "TODO登録",
             cssSrc  = Seq("todo/store.css"),
             jsSrc   = Seq("main.js"),
-            form    = todoForm
+            form    = formWithErrors
           )
           BadRequest(views.html.todo.Store(vv, todo, category))
         }
       },
       (todoFormData: TodoForm.TodoData) => {
-        val todoTable = Todo(TodoCategory.Id(todoFormData.categoryId.toLong),  todoFormData.title,   todoFormData.body,  IS_INACTIVE)
+        val todoTable = Todo(todoFormData.categoryId,  todoFormData.title,   todoFormData.body,  IS_INACTIVE)
         for {
           _         <- TodoRepository.add(todoTable)
         } yield {
@@ -102,7 +103,7 @@ class TodoController @Inject()(val controllerComponents: ControllerComponents)(i
             title  = "TODO編集",
             cssSrc = Seq("todo/store.css"),
             jsSrc  = Seq("main.js"),
-            form   = todoEditForm.fill(TodoForm.TodoEditData(v.title, v.body, v.state.name, v.category_id.toInt))
+            form   = todoEditForm.fill(TodoForm.TodoEditData(v.title, v.body, v.state.name, v.category_id))
           )
           Ok(views.html.todo.Edit(vv, v.id.get, category))
         case _  => Redirect("/todo/list")
@@ -114,19 +115,27 @@ class TodoController @Inject()(val controllerComponents: ControllerComponents)(i
   def update(Id:  Int) = Action.async { implicit request =>
     todoEditForm.bindFromRequest().fold(
       (formWithErrors: Form[TodoForm.TodoEditData]) => {
-        val vv = ViewValueHome(
-            title  = "TODO登録",
-            cssSrc = Seq("todo/edit.css"),
-            jsSrc  = Seq("main.js")
-        )
-        Future.successful(BadRequest(views.html.error.page404(vv)))
+        val categoryList = TodoCategoryRepository.getAll()
+        val category     = TodoRepository.get(Todo.Id(Id.toLong))
+        for {
+          list <- categoryList
+          c    <- category
+        } yield {
+          val vv = ViewValueEdit(
+            title  = "TODO編集",
+            cssSrc = Seq("todo/store.css"),
+            jsSrc  = Seq("main.js"),
+            form = formWithErrors
+          )
+          BadRequest(views.html.todo.Edit(vv, Todo.Id(Id.toLong), list))
+        }
       },
       (todoFormData: TodoForm.TodoEditData) => {
         for{
           todoInfo       <-  TodoRepository.get(Todo.Id(Id.toLong))
           editedTodo     = {
             val state = if (todoFormData.stateName == "TODO") IS_INACTIVE else if (todoFormData.stateName == "実行中") IS_ACTIVE else DONE
-            todoInfo.get.map(_.copy(title = todoFormData.title, body = todoFormData.body, state = state, category_id = TodoCategory.Id(Id.toLong)))
+            todoInfo.get.map(_.copy(title = todoFormData.title, body = todoFormData.body, state = state, category_id = todoFormData.categoryId))
           }
           updateTodo     <- TodoRepository.update(editedTodo)
         } yield {

@@ -1,6 +1,6 @@
 package controllers
 
-import ixias.model.Entity
+import ixias.model.{Entity, IdStatus}
 import lib.model.TodoCategory
 import play.api.i18n.I18nSupport
 import play.api.data.Form
@@ -38,7 +38,7 @@ class TodoCategoryController @Inject()(val controllerComponents: ControllerCompo
   def register() = Action { implicit request =>
     val vv = ViewValueCategoryStore(
       "Category登録",
-      Seq("category/categoryList.css"),
+      Seq("todo/store.css"),
       Seq("category/categoryList.js"),
       categoryForm
     )
@@ -50,7 +50,7 @@ class TodoCategoryController @Inject()(val controllerComponents: ControllerCompo
       (formWithErrors: Form[CategoryData]) => {
         val vv = ViewValueCategoryStore(
           "TODO登録",
-          Seq("todo/store.css"),
+          Seq("todo/edit.css"),
           Seq("main.js"),
           formWithErrors
         )
@@ -91,19 +91,20 @@ class TodoCategoryController @Inject()(val controllerComponents: ControllerCompo
   def update(Id: Int) = Action.async { implicit request =>
     categoryForm.bindFromRequest().fold(
       (formWithError: Form[CategoryData]) => {
-        val vv = ViewValueHome(
-          title  = "TODO登録",
-          cssSrc = Seq("todo/edit.css"),
-          jsSrc  = Seq("main.js")
+        val vv = ViewValueCategoryEdit(
+          "Category編集",
+          Seq("category/edit.css"),
+          Seq("main.js"),
+          formWithError
         )
-        Future.successful(BadRequest(views.html.error.page404(vv)))
+        Future.successful(BadRequest(views.html.category.Edit(vv, TodoCategory.Id(Id.toLong))))
       },
       (categoryData:  CategoryData) => {
         for {
-          todo     <- TodoCategoryRepository.get(TodoCategory.Id(Id.toLong))
+          cInfo     <- TodoCategoryRepository.get(TodoCategory.Id(Id.toLong))
           category = {
             val color = if(categoryData.color == 1) TodoCategory.Color.RED else if(categoryData.color == 2) TodoCategory.Color.BLUE else TodoCategory.Color.GREEN
-            todo.get.map(_.copy(name = categoryData.name, slug = categoryData.slug, color = color))
+            cInfo.get.map(_.copy(name = categoryData.name, slug = categoryData.slug, color = color))
           }
           _        <- TodoCategoryRepository.update(category)
         } yield {

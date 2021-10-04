@@ -1,7 +1,8 @@
 body {
   margin:           0;
   padding:          0;
-  background-color: slateblue;
+  background-color: white;
+  font-family:    'Bitter', serif;
 }
 
 .header {
@@ -42,71 +43,109 @@ body {
   display: none;
 }
 
-.todoList {
-    text-align: center;
-    margin: 0 auto;
-}
-
-.todoList table {
-    margin: 0 auto;
-}
-
 h1 {
     text-align:     center;
     font-size:      50px;
-    font-family:    'Bitter', serif;
 }
 
-.todoList th {
-    background-color:   #696969;
-    border-bottom:      1px   solid   #000000;
-    width:              200px;
-    padding:            20px    20px;
+.home {
+    border-radius:      10px;
+    border:             0px none;
+    background-color:   #FFFF00;
+    opacity:            0.6;
+    padding:            20px;
+    display:            inline;
 }
 
-.todoList td {
-    padding:            60px    20px;
-    border-bottom:      1px   solid   #778899;
+.register {
+    border-radius:      10px;
+    border:             0px none;
+    background-color:   #FF0000;
+    opacity:            0.6;
+    padding:            20px;
+    float:              right;
+}
+
+.list {
+    border:             solid 1px black;
+    border-style:       groove;
+    margin:             20px;
+    padding:            10px;
+    border-radius:      20px;
     background-color:   white;
-    border-spacing:     0;
-    border-collapse:    collapse;
+    text-align:         left;
+    clear:              both;
 }
 
-.todoList td p {
-    margin:     0;
-    padding:    60px
-}
-
-.todoList td:last-child {
-    padding:            0;
-    background-color:   black;
-    text-align:         center;
-}
-
-.todoList td input {
-    color:              red;
-    background-color:   black;
-    border:             none;
-    height:             160px;
-    width:              100px;
+a {
+    text-decoration:    none;
     font-size:          15px;
-    padding:            0;
-
+    color:              black;
 }
 
-.register a{
-    font-size:  30px;
+.title {
+    font-size:      20px;
+    font-family:    'Bitter', serif;
+    display:        inline;
+    text-align:     left;
 }
 
-table .color1 {
-    background-color: red;
+.state {
+    display:            inline-block;
+    background-color:   #99FFFF;
+    float:              right;
+    padding:            10px;
+    border:             0px none;
+    border-radius:      10px;
+    margin:             0;
 }
 
-table .color2 {
-    background-color: blue;
+.body {
+    font-size:      15px;
 }
 
-table .color3 {
-    background-color: green;
+.color1{
+    padding:            10px;
+    border-radius:      10px;
+    background-color:   #CC0099;
+    display:            inline-block;
+    margin:             0;
 }
 
+.color2{
+    padding:            10px;
+    border-radius:      10px;
+    background-color:   #66FFFF;
+    display:            inline-block;
+    margin:             0;
+}
+
+.color3{
+    padding:            10px;
+    border-radius:      10px;
+    background-color:   #99FF00;
+    display:            inline-block;
+    margin:             0;
+}
+
+.edit {
+    border-radius:      10px;
+    border:             0px none;
+    background-color:   #800000;
+    opacity:            0.6;
+    padding:            10px;
+    display:            inline-block;
+    float:              right;
+    margin-right:       5px;
+}
+
+.delete {
+    border-radius:      10px;
+    border:             0px none;
+    background-color:   #FF0000;
+    opacity:            0.6;
+    padding:            10px;
+    color:              white;
+    display:            inline-block;
+    float:              right;
+}

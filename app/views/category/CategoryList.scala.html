@@ -7,24 +7,16 @@ list:   Seq[TodoCategoryRepository.EntityEmbeddedId]
 )
 
 @common.Default(vv){
-    <table>
-        <tr>
-            <th>Category-Name</th>
-            <th>Slug</th>
-            <th>Color</th>
-            <th>Edit</th>
-        </tr>
+            <button class="home"><a href="@controllers.routes.HomeController.index">Home画面に戻る</a></button>
+            <button class=register><a href="@controllers.routes.TodoCategoryController.store()">Categoryを登録する</a></button>
             @for(category  <-  list){
-                <tr>
-                    <td>@category.v.name</td>
-                    <td>@category.v.slug</td>
-                    <td class="@category.v.color.name">@category.v.color.name</td>
-                    <td class="edit"><a href="@controllers.routes.TodoCategoryController.edit(category.id.toInt)">このCategoryを編集</a></td>
-                    <td class="delete"><a href="@controllers.routes.TodoCategoryController.delete(category.id.toInt)">このCategoryを削除</a></td>
-                </tr>
+                <div class="list">
+                    <p class="name">カテゴリ: @category.v.name</p>
+                    <p class="slug">スラッグ: @category.v.slug</p>
+                    <p class="@category.v.color.name">色:  @category.v.color.name</p>
+                    <button class="delete"><a href="@controllers.routes.TodoCategoryController.delete(category.id.toInt)">Categoryを削除</a></button>
+                    <button class="edit"><a href="@controllers.routes.TodoCategoryController.edit(category.id.toInt)">Categoryを編集</a></button>
+                </div>
             }
-    </table>
-<p class=register><a href="@controllers.routes.TodoCategoryController.store()">Categoryを登録する</a></p>
-<a href="@controllers.routes.HomeController.index">Home画面に戻る</a>
 
 }

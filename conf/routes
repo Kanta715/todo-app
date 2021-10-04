@@ -11,7 +11,7 @@ GET     /todo/store                        controllers.TodoController.register
 POST    /todo/store                        controllers.TodoController.store
 GET     /todo/edit/$id<[0-9]+>             controllers.TodoController.edit(id:   Int)
 POST    /todo/update/$id<[0-9]+>           controllers.TodoController.update(id: Int)
-POST    /todo/delete/$id<[0-9]+>           controllers.TodoController.delete(id: Int)
+GET     /todo/delete/$id<[0-9]+>           controllers.TodoController.delete(id: Int)
 
 GET     /category/list                     controllers.TodoCategoryController.list
 GET     /category/store                    controllers.TodoCategoryController.register
