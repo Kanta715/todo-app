@@ -29,10 +29,11 @@ case class TodoRepository[P <: JdbcProfile]()(implicit val driver: P)
 
   //  参照なので、slaveで取得
   //  RunDBActionの挙動自体があまり理解できていないため、資料を見ないと実装できなかった
-  def getAll(): Future[List[Todo]] =
-    RunDBAction(TodoTable, "slave") { _
-      .to[List].result
+  def getAll(): Future[Seq[EntityEmbeddedId]] = {
+    RunDBAction(TodoTable, "slave") { slick =>
+      slick.result
     }
+  }
 
   /**
     * Add User Data

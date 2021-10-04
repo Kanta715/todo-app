@@ -16,7 +16,7 @@ object TodoData{
     mapping(
       "title"         ->  nonEmptyText,
       "body"          ->  text,
-      "categoryName"  ->  number
+      "categoryId"    ->  number
     )(TodoForm.TodoData.apply)(TodoForm.TodoData.unapply)
   )
 }

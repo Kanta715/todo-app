@@ -5,10 +5,13 @@
 
 package lib.persistence.db
 
+import ixias.model.Entity.EmbeddedId
+
 import java.time.LocalDateTime
 import slick.jdbc.JdbcProfile
 import ixias.persistence.model.Table
 import lib.model.{Todo, TodoCategory}
+import lib.persistence.onMySQL.TodoCategoryRepository.EntityEmbeddedId
 
 // TodoTable: to_doテーブルへのマッピングを行う
 //~~~~~~~~~~~~~~

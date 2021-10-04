@@ -1,12 +1,12 @@
 @import lib.model.Todo
 @import lib.model.Todo.Status._
 @import lib.model.TodoCategory
+@import lib.persistence.onMySQL.TodoCategoryRepository
 
 @(
 vv:            model.TodoVV.ViewValueEdit,
 id:            Todo.Id,
-list:          List[String],
-categoryList:  List[TodoCategory]
+categoryList:  Seq[TodoCategoryRepository.EntityEmbeddedId]
 )(implicit request: RequestHeader,  messageProvider: MessagesProvider)
 
 @common.Default(vv){
@@ -33,10 +33,10 @@ categoryList:  List[TodoCategory]
         @*   フロント、バック、インフラのみなのでラジオ式     *@
         @helper.inputRadioGroup(vv.form("categoryId"),
         options = for{
-            cName       <- list
-            category    <- categoryList.find(_.name == cName)
+            cName       <- categoryList.map(_.v.name).foldLeft(List(): List[String])((x,y) => if(x.contains(y)) x else x :+ y)
+            category    <- categoryList.find(_.v.name == cName)
             } yield {
-                category.id.get.toString -> cName
+                category.id.toString -> cName
         },
         '_label -> "開発カテゴリ"
         )

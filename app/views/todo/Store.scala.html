@@ -1,11 +1,13 @@
 @import model.TodoForm.TodoData
 @import lib.model.Todo
 @import lib.model.TodoCategory
+@import lib.persistence.onMySQL.TodoRepository
+@import lib.persistence.onMySQL.TodoCategoryRepository
 
 @(
 vv:           model.TodoVV.ViewValueStore,
-todoList:     List[Todo],
-categoryList: List[TodoCategory]
+todoList:     Seq[TodoRepository.EntityEmbeddedId],
+categoryList: Seq[TodoCategoryRepository.EntityEmbeddedId]
 )(implicit request: RequestHeader,  messageProvider: MessagesProvider)
 
 @common.Default(vv){
@@ -22,12 +24,12 @@ categoryList: List[TodoCategory]
             'placeholder -> "Todoの内容を入力（任意）"
         )
         @*   フロント、バック、インフラのみなのでラジオ式     *@
-        @helper.inputRadioGroup(vv.form("categoryName"),
+        @helper.inputRadioGroup(vv.form("categoryId"),
             options = for{
-                categoryName  <-  categoryList.map(_.name).distinct
-                category      <-  categoryList.find(_.name == categoryName)
+                name          <-  categoryList.map(_.v.name).distinct
+                category      <-  categoryList.find(_.v.name == name)
             } yield {
-                category.id.get.toString -> categoryName
+                category.id.toString -> name
             },
         '_label -> "開発カテゴリ"
         )

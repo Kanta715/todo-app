@@ -68,7 +68,7 @@ class TodoCategoryController @Inject()(val controllerComponents: ControllerCompo
     )
   }
 
-  def edit(Id:  Int) = Action.async { implicit request =>
+  def edit(Id: Int) = Action.async { implicit request =>
     for {
       optCategory <- TodoCategoryRepository.get(TodoCategory.Id(Id.toLong))
     } yield {
@@ -80,7 +80,7 @@ class TodoCategoryController @Inject()(val controllerComponents: ControllerCompo
             Seq("main.js"),
             categoryForm.fill(CategoryData(v.name, v.slug, v.color.code))
           )
-          Ok(views.html.category.Edit(vv, v.id.get))
+          Ok(views.html.category.Edit(vv, TodoCategory.Id(Id.toLong)))
         }
         case _ =>  Redirect("/category/list")
       }
@@ -88,7 +88,7 @@ class TodoCategoryController @Inject()(val controllerComponents: ControllerCompo
     }
   }
 
-  def update(id:  Int) = Action.async { implicit request =>
+  def update(Id: Int) = Action.async { implicit request =>
     categoryForm.bindFromRequest().fold(
       (formWithError: Form[CategoryData]) => {
         val vv = ViewValueHome(
@@ -100,7 +100,7 @@ class TodoCategoryController @Inject()(val controllerComponents: ControllerCompo
       },
       (categoryData:  CategoryData) => {
         for {
-          todo     <- TodoCategoryRepository.get(TodoCategory.Id(id.toLong))
+          todo     <- TodoCategoryRepository.get(TodoCategory.Id(Id.toLong))
           category = {
             val color = if(categoryData.color == 1) TodoCategory.Color.RED else if(categoryData.color == 2) TodoCategory.Color.BLUE else TodoCategory.Color.GREEN
             todo.get.map(_.copy(name = categoryData.name, slug = categoryData.slug, color = color))
@@ -113,9 +113,9 @@ class TodoCategoryController @Inject()(val controllerComponents: ControllerCompo
     )
   }
 
-  def delete(id:  Int) = Action.async { implicit request =>
+  def delete(Id: Int) = Action.async { implicit request =>
     for {
-      _  <-  TodoCategoryRepository.remove(TodoCategory.Id(id.toLong))
+      _  <-  TodoCategoryRepository.remove(TodoCategory.Id(Id.toLong))
     } yield {
       Redirect("/category/list")
     }

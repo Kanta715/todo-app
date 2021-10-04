@@ -21,10 +21,11 @@ case class TodoCategoryRepository[P <: JdbcProfile]()(implicit val driver: P)
       .result.headOption
     }
 
-  def getAll(): Future[List[TodoCategory]] =
+  def getAll(): Future[Seq[EntityEmbeddedId]] = {
     RunDBAction(TodoCategoryTable, "slave") { _
-      .to[List].result
+      .result
     }
+  }
 
   /**
    * Add User Data
