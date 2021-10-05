@@ -15,9 +15,9 @@ vv:         model.TodoVV.ViewValueList
                 <p class="title">             @todo.v.title      </p>
                 <p class="state">             @todo.v.state.name </p>
                 <p class="body">              @todo.v.body       </p>
-                <p class="color@vv.categoryList.find(_.id.toInt == todo.v.category_id).map(_.v.color.code).getOrElse(0)">
+                <p class="color@vv.categoryList.find(_.id == todo.v.category_id).map(_.v.color.code).getOrElse(0)">
                     @{
-                    val category = vv.categoryList.find(_.id.toInt == todo.v.category_id).map(_.v.name)
+                    val category = vv.categoryList.find(_.id == todo.v.category_id).map(_.v.name)
                     category.getOrElse("カテゴリ名が見つかりません。")
                     }
                 </p>

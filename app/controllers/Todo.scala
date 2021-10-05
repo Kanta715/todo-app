@@ -116,10 +116,8 @@ class TodoController @Inject()(val controllerComponents: ControllerComponents)(i
     todoEditForm.bindFromRequest().fold(
       (formWithErrors: Form[TodoForm.TodoEditData]) => {
         val categoryList = TodoCategoryRepository.getAll()
-        val category     = TodoRepository.get(Todo.Id(Id.toLong))
         for {
           list <- categoryList
-          c    <- category
         } yield {
           val vv = ViewValueEdit(
             title  = "TODO編集",
@@ -145,7 +143,7 @@ class TodoController @Inject()(val controllerComponents: ControllerComponents)(i
             jsSrc  = Seq("main.js")
           )
           updateTodo match {
-            case Some(t) =>  Redirect("/todo/list")
+            case Some(_) =>  Redirect("/todo/list")
             case None    =>  Ok(views.html.error.page404(vv))
           }
         }
@@ -165,7 +163,7 @@ class TodoController @Inject()(val controllerComponents: ControllerComponents)(i
             jsSrc  = Seq("main.js")
           )
           BadRequest(views.html.error.page404(vv))
-        case Some(value)  =>
+        case Some(_)  =>
           Redirect("/todo/list")
       }
     }

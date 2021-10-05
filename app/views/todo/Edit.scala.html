@@ -33,10 +33,9 @@ categoryList:  Seq[TodoCategoryRepository.EntityEmbeddedId]
         @*   フロント、バック、インフラのみなのでラジオ式     *@
         @helper.inputRadioGroup(vv.form("categoryId"),
         options = for{
-            cName       <- categoryList.map(_.v.name).foldLeft(List(): List[String])((x,y) => if(x.contains(y)) x else x :+ y)
-            category    <- categoryList.find(_.v.name == cName)
+            category    <- categoryList.foldLeft(List(): List[TodoCategoryRepository.EntityEmbeddedId])((x,y) => if(x.contains(y.v.name)) x else x :+ y)
             } yield {
-                category.id.toString -> cName
+                category.id.toString -> category.v.name
         },
         '_label -> "開発カテゴリ"
         )
