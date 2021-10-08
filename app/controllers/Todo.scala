@@ -98,14 +98,14 @@ class TodoController @Inject()(val controllerComponents: ControllerComponents)(i
       category     <- categoryList
     } yield {
       todo match {
-        case Some(Entity(v)) =>
+        case Some(todo@Entity(v)) =>
           val vv = ViewValueEdit(
             title  = "TODO編集",
             cssSrc = Seq("todo/store.css"),
             jsSrc  = Seq("main.js"),
-            form   = todoEditForm.fill(TodoForm.TodoEditData(v.title, v.body, v.state.name, v.category_id))
+            form   = todoEditForm.fill(TodoForm.TodoEditData(v.title, v.body, v.state, v.category_id))
           )
-          Ok(views.html.todo.Edit(vv, v.id.get, category))
+          Ok(views.html.todo.Edit(vv, todo.id, category))
         case _  => Redirect("/todo/list")
       }
     }
@@ -132,8 +132,7 @@ class TodoController @Inject()(val controllerComponents: ControllerComponents)(i
         for{
           todoInfo       <-  TodoRepository.get(Todo.Id(Id.toLong))
           editedTodo     = {
-            val state = if (todoFormData.stateName == "TODO") IS_INACTIVE else if (todoFormData.stateName == "実行中") IS_ACTIVE else DONE
-            todoInfo.get.map(_.copy(title = todoFormData.title, body = todoFormData.body, state = state, category_id = todoFormData.categoryId))
+            todoInfo.get.map(_.copy(title = todoFormData.title, body = todoFormData.body, state = todoFormData.status, category_id = todoFormData.categoryId))
           }
           updateTodo     <- TodoRepository.update(editedTodo)
         } yield {

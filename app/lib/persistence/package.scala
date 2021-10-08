@@ -15,4 +15,5 @@ package object persistence {
 
     object TodoCategoryRepository extends TodoCategoryRepository
   }
+
 }

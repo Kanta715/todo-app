@@ -6,10 +6,12 @@ import play.api.data._
 import play.api.data.validation._
 
 //  新規登録用Formのケースクラスと、マッピングさせた変数
-case class CategoryData(
+case class
+
+CategoryData(
   name:         String,
   slug:         String,
-  color:        Int
+  color:        TodoCategory.Color
 )
 
 object CategoryData{
@@ -24,9 +26,9 @@ object CategoryData{
 
   val categoryForm = Form(
     mapping(
-      "name"        ->  nonEmptyText,
-      "slug"        ->  nonEmptyText.verifying(constraint),
-      "color"       ->  number
+      "name"                ->  nonEmptyText,
+      "slug"                ->  nonEmptyText.verifying(constraint),
+      "categoryColorCode"   ->  shortNumber.transform[TodoCategory.Color](code => TodoCategory.Color(code), color => color.code)
     )(CategoryData.apply)(CategoryData.unapply)
   )
 }

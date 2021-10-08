@@ -26,7 +26,7 @@ categoryList: Seq[TodoCategoryRepository.EntityEmbeddedId]
         @*   フロント、バック、インフラのみなのでラジオ式     *@
         @helper.inputRadioGroup(vv.form("categoryId"),
             options = for{
-                category <- categoryList.foldLeft(List(): List[TodoCategoryRepository.EntityEmbeddedId])((x,y) => if(x.contains(y.v.name)) x else x :+ y)
+                category <- categoryList
             } yield {
                 category.id.toString -> category.v.name
             },

@@ -57,8 +57,7 @@ class TodoCategoryController @Inject()(val controllerComponents: ControllerCompo
         Future.successful(BadRequest(views.html.category.Store(vv)))
       },
       (categoryData: CategoryData) => {
-        val color    = if(categoryData.color == 1) TodoCategory.Color.RED else if(categoryData.color == 2)TodoCategory.Color.BLUE else TodoCategory.Color.GREEN
-        val category = TodoCategory(categoryData.name, categoryData.slug, color)
+        val category = TodoCategory(categoryData.name, categoryData.slug, categoryData.color)
         for{
           _         <- TodoCategoryRepository.add(category)
         } yield {
@@ -78,7 +77,7 @@ class TodoCategoryController @Inject()(val controllerComponents: ControllerCompo
             "Category編集",
             Seq("category/edit.css"),
             Seq("main.js"),
-            categoryForm.fill(CategoryData(v.name, v.slug, v.color.code))
+            categoryForm.fill(CategoryData(v.name, v.slug, v.color))
           )
           Ok(views.html.category.Edit(vv, TodoCategory.Id(Id.toLong)))
         }
@@ -103,8 +102,7 @@ class TodoCategoryController @Inject()(val controllerComponents: ControllerCompo
         for {
           cInfo     <- TodoCategoryRepository.get(TodoCategory.Id(Id.toLong))
           category = {
-            val color = if(categoryData.color == 1) TodoCategory.Color.RED else if(categoryData.color == 2) TodoCategory.Color.BLUE else TodoCategory.Color.GREEN
-            cInfo.get.map(_.copy(name = categoryData.name, slug = categoryData.slug, color = color))
+            cInfo.get.map(_.copy(name = categoryData.name, slug = categoryData.slug, color = categoryData.color))
           }
           _        <- TodoCategoryRepository.update(category)
         } yield {

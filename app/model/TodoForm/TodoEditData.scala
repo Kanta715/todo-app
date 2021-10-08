@@ -8,7 +8,7 @@ import play.api.data._
 case class TodoEditData(
      title:        String,
      body:         String,
-     stateName:    String,
+     status:       Todo.Status,
      categoryId:   TodoCategory.Id
 )
 
@@ -17,8 +17,9 @@ object TodoEditData{
     mapping(
       "title"         ->  nonEmptyText,
       "body"          ->  text,
-      "stateName"     ->  text,
-      "categoryId"    ->  longNumber.transform(TodoCategory.Id.apply, TodoCategory.Id.unwrap)
+      "statusCode"    ->  shortNumber.transform[Todo.Status](shortNum => Todo.Status(shortNum), state => state.code),
+      "categoryId"    ->  longNumber.transform[TodoCategory.Id](longNum => TodoCategory.Id(longNum),id => id.toLong)
     )(TodoEditData.apply)(TodoEditData.unapply)
   )
+
 }
