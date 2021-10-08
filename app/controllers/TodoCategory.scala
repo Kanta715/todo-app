@@ -102,7 +102,9 @@ class TodoCategoryController @Inject()(val controllerComponents: ControllerCompo
         for {
           cInfo     <- TodoCategoryRepository.get(TodoCategory.Id(Id.toLong))
           category = {
-            cInfo.get.map(_.copy(name = categoryData.name, slug = categoryData.slug, color = categoryData.color))
+            cInfo match {
+              case Some(category@Entity(_)) => category.map(_.copy(name = categoryData.name, slug = categoryData.slug, color = categoryData.color))
+            }
           }
           _        <- TodoCategoryRepository.update(category)
         } yield {

@@ -6,23 +6,27 @@ vv:         model.TodoVV.ViewValueList
 )(implicit request: RequestHeader,  messageProvider: MessagesProvider)
 
 @common.Default(vv){
-    <button class="home"><a href="@controllers.routes.HomeController.index">Home画面に戻る</a></button>
-    <button class="register"><a href="@controllers.routes.TodoController.store()">Todo作成</a></button>
+    <p class="home"><a href="@controllers.routes.HomeController.index">Home画面に戻る</a></p>
+    <p class="register"><a href="@controllers.routes.TodoController.store()">Todo作成</a></p>
     <div class="todoList">
             @*   for文でtodoInfoの要素数、情報を出力    *@
             @for(todo      <- vv.todoList){
             <div class="list">
                 <p class="title">             @todo.v.title      </p>
                 <p class="state">             @todo.v.state.name </p>
+                <div class="category">
+                    <p class="color@vv.categoryList.find(_.id == todo.v.category_id).map(_.v.color.code).getOrElse(0)">
+                        @{
+                        val category = vv.categoryList.find(_.id == todo.v.category_id).map(_.v.name)
+                        category.getOrElse("カテゴリ名が見つかりません。")
+                        }
+                    </p>
+                </div>
                 <p class="body">              @todo.v.body       </p>
-                <p class="color@vv.categoryList.find(_.id == todo.v.category_id).map(_.v.color.code).getOrElse(0)">
-                    @{
-                    val category = vv.categoryList.find(_.id == todo.v.category_id).map(_.v.name)
-                    category.getOrElse("カテゴリ名が見つかりません。")
-                    }
-                </p>
-                <button class="delete"><a href="@controllers.routes.TodoController.delete(todo.id.toInt)">Todoを削除</a></button>
-                <button class="edit"><a href="@controllers.routes.TodoController.edit(todo.id.toInt)">Todoを編集</a></button>
+                <div class="other">
+                    <p class="edit"><a href="@controllers.routes.TodoController.edit(todo.id.toInt)">Todoを編集</a></p>
+                    <p class="delete"><a href="@controllers.routes.TodoController.delete(todo.id.toInt)">Todoを削除</a></p>
+                </div>
             </div>
             }
     </div>
