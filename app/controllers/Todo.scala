@@ -131,7 +131,7 @@ class TodoController @Inject()(val controllerComponents: ControllerComponents)(i
       (todoFormData: TodoForm.TodoEditData) => {
         for{
           todoInfo       <-  TodoRepository.get(Todo.Id(Id.toLong))
-          edit           <-  Future.successful {
+          edit           <-  Future{
             todoInfo match {
               case Some(todo@Entity(_)) => {
                 Some(todo.map(_.copy(title = todoFormData.title, body = todoFormData.body, state = todoFormData.status, category_id = todoFormData.categoryId)))
