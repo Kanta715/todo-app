@@ -26,7 +26,7 @@ categoryList:  Seq[TodoCategoryRepository.EntityEmbeddedId]
 
         @*  TODOの状況  *@
             @helper.inputRadioGroup(vv.form("statusCode"),
-            options = Seq(Todo.Status.IS_INACTIVE.code.toString -> Todo.Status.IS_INACTIVE.name,  Todo.Status.IS_ACTIVE.code.toString -> Todo.Status.IS_ACTIVE.name,  Todo.Status.DONE.code.toString -> Todo.Status.DONE.name),
+            options = Todo.Status.values.map(status => status.code.toString -> status.name),
             '_label -> "TODO状況"
         )
 

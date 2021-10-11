@@ -20,8 +20,8 @@ id:         TodoCategory.Id
         'size -> 50,     '_label -> "スラッグ名",    '_showConstrains -> false,    'placeholder -> "slug名を英数字のみで入力"
     )
     @*   色を選択     *@
-        @helper.inputRadioGroup(vv.form("color"),
-        options = Seq(TodoCategory.Color.RED.code.toString -> TodoCategory.Color.RED.name, TodoCategory.Color.BLUE.code.toString -> TodoCategory.Color.BLUE.name, TodoCategory.Color.GREEN.code.toString -> TodoCategory.Color.GREEN.name),
+        @helper.inputRadioGroup(vv.form("categoryColorCode"),
+        options = TodoCategory.Color.values.map(color => color.code.toString -> color.name),
         '_label -> "背景色を選択"
     )
 

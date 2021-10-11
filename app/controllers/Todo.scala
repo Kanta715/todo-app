@@ -12,13 +12,13 @@ import model._
 import lib.model.{Todo, TodoCategory}
 import lib.persistence.onMySQL.TodoCategoryRepository
 
-import scala.concurrent.Future
+import scala.concurrent.{Await, ExecutionContext, Future}
 import model.TodoForm.TodoData._
 import lib.persistence.onMySQL.TodoRepository
 import model.TodoForm.TodoEditData
 import model.TodoVV._
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.duration.Duration
 
 
 
@@ -131,19 +131,21 @@ class TodoController @Inject()(val controllerComponents: ControllerComponents)(i
       (todoFormData: TodoForm.TodoEditData) => {
         for{
           todoInfo       <-  TodoRepository.get(Todo.Id(Id.toLong))
-          editedTodo     = {
-            todoInfo.get.map(_.copy(title = todoFormData.title, body = todoFormData.body, state = todoFormData.status, category_id = todoFormData.categoryId))
-          }
-          updateTodo     <- TodoRepository.update(editedTodo)
         } yield {
-          val vv = ViewValueHome(
-            title  = "Home",
-            cssSrc = Seq("main.css"),
-            jsSrc  = Seq("main.js")
-          )
-          updateTodo match {
-            case Some(_) =>  Redirect("/todo/list")
-            case None    =>  Ok(views.html.error.page404(vv))
+          todoInfo match {
+            case Some(todo@Entity(_)) => {
+              val edit   = todo.map(_.copy(title = todoFormData.title, body = todoFormData.body, state = todoFormData.status, category_id = todoFormData.categoryId))
+              val update = TodoRepository.update(edit)
+              Await.ready(update, Duration.Inf)
+              Redirect("/todo/list")
+            }
+            case None                     => {
+              BadRequest(views.html.error.page404(model.ViewValueHome(
+                "Error",
+                Seq("main.css"),
+                Seq("main.js")
+              )))
+            }
           }
         }
       }

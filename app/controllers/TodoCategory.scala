@@ -100,15 +100,22 @@ class TodoCategoryController @Inject()(val controllerComponents: ControllerCompo
       },
       (categoryData:  CategoryData) => {
         for {
-          cInfo     <- TodoCategoryRepository.get(TodoCategory.Id(Id.toLong))
-          category = {
-            cInfo match {
-              case Some(category@Entity(_)) => category.map(_.copy(name = categoryData.name, slug = categoryData.slug, color = categoryData.color))
+          category <- TodoCategoryRepository.get(TodoCategory.Id(Id.toLong))
+        } yield {
+          category match {
+            case Some(category@Entity(_)) => {
+              val edit = category.map(_.copy(name = categoryData.name, slug = categoryData.slug, color = categoryData.color))
+              TodoCategoryRepository.update(edit)
+              Redirect("/category/list")
+            }
+            case None                     => {
+              BadRequest(views.html.error.page404(model.ViewValueHome(
+                "Error",
+                Seq("main.css"),
+                Seq("main.js")
+              )))
             }
           }
-          _        <- TodoCategoryRepository.update(category)
-        } yield {
-          Redirect("/category/list")
         }
       }
     )
