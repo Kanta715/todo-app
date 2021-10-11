@@ -55,6 +55,7 @@ h1 {
     opacity:            0.6;
     padding:            20px;
     display:            inline;
+    cursor:             pointer;
 }
 
 .home {
@@ -64,6 +65,7 @@ h1 {
     opacity:            0.6;
     padding:            20px;
     float:              right;
+    cursor:             pointer;
 }
 
 

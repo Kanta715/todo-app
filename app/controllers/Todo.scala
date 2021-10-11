@@ -131,15 +131,24 @@ class TodoController @Inject()(val controllerComponents: ControllerComponents)(i
       (todoFormData: TodoForm.TodoEditData) => {
         for{
           todoInfo       <-  TodoRepository.get(Todo.Id(Id.toLong))
+          edit           <-  Future.successful {
+            todoInfo match {
+              case Some(todo@Entity(_)) => {
+                Some(todo.map(_.copy(title = todoFormData.title, body = todoFormData.body, state = todoFormData.status, category_id = todoFormData.categoryId)))
+              }
+              case None => None
+            }
+          }
+          update         <-  edit match {
+            case Some(data) =>  TodoRepository.update(data)
+            case None       =>  Future.successful(None)
+          }
         } yield {
-          todoInfo match {
-            case Some(todo@Entity(_)) => {
-              val edit   = todo.map(_.copy(title = todoFormData.title, body = todoFormData.body, state = todoFormData.status, category_id = todoFormData.categoryId))
-              val update = TodoRepository.update(edit)
-              Await.ready(update, Duration.Inf)
+          update match {
+            case Some(_) => {
               Redirect("/todo/list")
             }
-            case None                     => {
+            case None    => {
               BadRequest(views.html.error.page404(model.ViewValueHome(
                 "Error",
                 Seq("main.css"),

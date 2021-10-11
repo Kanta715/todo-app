@@ -29,7 +29,7 @@ class TodoCategoryController @Inject()(val controllerComponents: ControllerCompo
       val vv = ViewValueCategoryList(
         "Category-List",
         Seq("category/categoryList.css"),
-        Seq("category/categoryList.js")
+        Seq("main.js")
       )
       Ok(views.html.category.CategoryList(vv, list))
     }
@@ -39,7 +39,7 @@ class TodoCategoryController @Inject()(val controllerComponents: ControllerCompo
     val vv = ViewValueCategoryStore(
       "Category登録",
       Seq("todo/store.css"),
-      Seq("category/categoryList.js"),
+      Seq("main.js"),
       categoryForm
     )
     Ok(views.html.category.Store(vv))
@@ -49,8 +49,8 @@ class TodoCategoryController @Inject()(val controllerComponents: ControllerCompo
     categoryForm.bindFromRequest().fold(
       (formWithErrors: Form[CategoryData]) => {
         val vv = ViewValueCategoryStore(
-          "TODO登録",
-          Seq("todo/edit.css"),
+          "Category登録",
+          Seq("todo/store.css"),
           Seq("main.js"),
           formWithErrors
         )
@@ -101,15 +101,25 @@ class TodoCategoryController @Inject()(val controllerComponents: ControllerCompo
       (categoryData:  CategoryData) => {
         for {
           category <- TodoCategoryRepository.get(TodoCategory.Id(Id.toLong))
+          edit     <- Future.successful {
+            category match {
+              case Some(category@Entity(_)) => {
+                Some(category.map(_.copy(name = categoryData.name, slug = categoryData.slug, color = categoryData.color)))
+              }
+              case None => None
+            }
+          }
+          update   <- edit match {
+            case Some(data) =>  TodoCategoryRepository.update(data)
+            case None       =>  Future.successful(None)
+          }
         } yield {
-          category match {
-            case Some(category@Entity(_)) => {
-              val edit = category.map(_.copy(name = categoryData.name, slug = categoryData.slug, color = categoryData.color))
-              TodoCategoryRepository.update(edit)
+          update match {
+            case Some(_) => {
               Redirect("/category/list")
             }
-            case None                     => {
-              BadRequest(views.html.error.page404(model.ViewValueHome(
+            case _       => {
+              NotFound(views.html.error.page404(model.ViewValueHome(
                 "Error",
                 Seq("main.css"),
                 Seq("main.js")

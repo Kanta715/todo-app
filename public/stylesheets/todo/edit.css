@@ -48,13 +48,14 @@ h1 {
     font-size:      50px;
 }
 
-.store {
+.done {
     border-radius:      10px;
     border:             0px none;
     background-color:   #FFFF00;
     opacity:            0.6;
     padding:            20px;
     display:            inline;
+    cursor:             pointer;
 }
 
 .home {
@@ -64,6 +65,7 @@ h1 {
     opacity:            0.6;
     padding:            20px;
     float:              right;
+    cursor:             pointer;
 }
 
 
@@ -77,3 +79,5 @@ form .text {
     height: 30px;
     width:  60px;
 }
+
+
