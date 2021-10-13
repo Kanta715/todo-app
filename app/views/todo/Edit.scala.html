@@ -1,0 +1,49 @@
+@import lib.model.Todo
+@import lib.model.Todo.Status._
+@import lib.model.TodoCategory
+@import lib.persistence.onMySQL.TodoCategoryRepository
+
+@(
+vv:            model.TodoVV.ViewValueEdit,
+id:            Todo.Id,
+categoryList:  Seq[TodoCategoryRepository.EntityEmbeddedId]
+)(implicit request: RequestHeader,  messageProvider: MessagesProvider)
+
+@common.Default(vv){
+    @helper.form(action = controllers.routes.TodoController.update(id.toInt)) {
+        @helper.CSRF.formField
+
+        @*   １行だけのテキスト  *@
+        @helper.inputText(vv.form("title"),
+            'size -> 100,    '_label -> "タイトル",     '_showConstrains -> false
+        )
+
+        @*   複数行のテキスト(制約はない)    *@
+        @helper.textarea(vv.form("body"),
+            'rows -> 6,     'cols -> 150,        '_label -> "内容",    '_showConstrains -> false,
+            'class -> "textarea"
+        )
+
+        @*  TODOの状況  *@
+            @helper.inputRadioGroup(vv.form("statusCode"),
+            options = Todo.Status.values.map(status => status.code.toString -> status.name),
+            '_label -> "TODO状況"
+        )
+
+        @*   フロント、バック、インフラのみなのでラジオ式     *@
+        @helper.inputRadioGroup(vv.form("categoryId"),
+        options = for{
+            category    <- categoryList
+            } yield {
+                category.id.toString -> category.v.name
+        },
+        '_label -> "開発カテゴリ"
+        )
+
+        <button class="done">編集完了</button>
+
+        <button class="home"><a href="/todo/list">一覧画面に戻る</a></button>
+
+    }
+}
+

@@ -1,0 +1,24 @@
+@import lib.model.TodoCategory
+@import lib.persistence.onMySQL.TodoCategoryRepository
+
+@(
+vv:     model.TodoCategoryVV.ViewValueCategoryList,
+list:   Seq[TodoCategoryRepository.EntityEmbeddedId]
+)
+
+@common.Default(vv){
+            <p class="home"><a href="@controllers.routes.HomeController.index">Home画面に戻る</a></p>
+            <p class=register><a href="@controllers.routes.TodoCategoryController.store()">Categoryを登録する</a></p>
+            @for(category  <-  list){
+                <div class="list">
+                    <p class="name">カテゴリ: @category.v.name</p>
+                    <p class="slug">スラッグ: @category.v.slug</p>
+                    <p class="@category.v.color.name">色:  @category.v.color.name</p>
+                    <div class="other">
+                        <p class="edit"><a href="@controllers.routes.TodoCategoryController.edit(category.id.toInt)">Categoryを編集</a></p>
+                        <p class="delete"><a href="@controllers.routes.TodoCategoryController.delete(category.id.toInt)">Categoryを削除</a></p>
+                    </div>
+                </div>
+            }
+
+}

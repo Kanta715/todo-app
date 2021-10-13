@@ -7,31 +7,37 @@ package lib.persistence
 
 import scala.concurrent.Future
 import ixias.persistence.SlickRepository
-import lib.model.User
+import lib.model.Todo
 import slick.jdbc.JdbcProfile
 
-// UserRepository: UserTableへのクエリ発行を行うRepository層の定義
+// TodoRepository: TodoTableへのクエリ発行を行うRepository層の定義
 //~~~~~~~~~~~~~~~~~~~~~~
-case class UserRepository[P <: JdbcProfile]()(implicit val driver: P)
-  extends SlickRepository[User.Id, User, P]
+case class TodoRepository[P <: JdbcProfile]()(implicit val driver: P)
+  extends SlickRepository[Todo.Id, Todo, P]
   with db.SlickResourceProvider[P] {
 
   import api._
 
-  /**
-    * Get User Data
-    */
-  def get(id: Id): Future[Option[EntityEmbeddedId]] =
-    RunDBAction(UserTable, "slave") { _
+
+  def get(id: Id): Future[Option[EntityEmbeddedId]] = {
+    RunDBAction(TodoTable, "slave") { _
       .filter(_.id === id)
       .result.headOption
+  }
+
+  }
+
+  //  参照なので、slaveで取得
+  //  RunDBActionの挙動自体があまり理解できていないため、資料を見ないと実装できなかった
+  def getAll(): Future[Seq[EntityEmbeddedId]] = {
+    RunDBAction(TodoTable, "slave") { _.result }
   }
 
   /**
     * Add User Data
    */
   def add(entity: EntityWithNoId): Future[Id] =
-    RunDBAction(UserTable) { slick =>
+    RunDBAction(TodoTable) { slick =>
       slick returning slick.map(_.id) += entity.v
     }
 
@@ -39,7 +45,7 @@ case class UserRepository[P <: JdbcProfile]()(implicit val driver: P)
    * Update User Data
    */
   def update(entity: EntityEmbeddedId): Future[Option[EntityEmbeddedId]] =
-    RunDBAction(UserTable) { slick =>
+    RunDBAction(TodoTable) { slick =>
       val row = slick.filter(_.id === entity.id)
       for {
         old <- row.result.headOption
@@ -54,7 +60,7 @@ case class UserRepository[P <: JdbcProfile]()(implicit val driver: P)
    * Delete User Data
    */
   def remove(id: Id): Future[Option[EntityEmbeddedId]] =
-    RunDBAction(UserTable) { slick =>
+    RunDBAction(TodoTable) { slick =>
       val row = slick.filter(_.id === id)
       for {
         old <- row.result.headOption

@@ -1,0 +1,185 @@
+body {
+  margin:           0;
+  padding:          0;
+  background-color: white;
+  font-family:    'Bitter', serif;
+}
+
+.header {
+  height:            70px;
+  background-color:  #24292F;
+  width:             100%;
+}
+
+.header .header__content {
+  width:      1080px;
+  margin:     auto;
+}
+
+.header .header__logo {
+  color:             white;
+  line-height:       70px;
+  font-size:         20px;
+  font-weight:       bold;
+}
+
+.main {
+  width:            980px;
+  margin:           100px auto;
+  padding:          100px;
+  box-shadow:       0 0 4px gray;
+  position:         relative;
+  background-color: #e6e6fa;
+}
+
+.success-message {
+  margin:      30px 0;
+  text-align:  center;
+}
+
+
+/******* フォームのinfoを非表示に *******/
+.info {
+  display: none;
+}
+
+h1 {
+    text-align:     center;
+    font-size:      50px;
+}
+
+.home {
+    display:            inline-block;
+    width:              150px;
+    border:             0px none;
+    border-radius:      10px;
+    background-color:   #FFFF00;
+    opacity:            0.6;
+    margin-right:       20px;
+}
+
+.home a {
+    display:    block;
+    width:      100%;
+    height:     100%;
+    text-align: center;
+    padding:    20px    0;
+}
+
+.register {
+    display:            inline-block;
+    width:              180px;
+    border:             0px none;
+    border-radius:      10px;
+    background-color:   #FF0000;
+    opacity:            0.6;
+
+}
+
+.register a {
+    display:    block;
+    width:      100%;
+    height:     100%;
+    text-align: center;
+    padding:    20px    0;
+}
+
+.list {
+    border:             solid 1px black;
+    border-style:       groove;
+    margin:             20px;
+    padding:            10px;
+    border-radius:      20px;
+    background-color:   white;
+    text-align:         left;
+    clear:              both;
+}
+
+a {
+    display:            inline-block;
+    text-decoration:    none;
+    font-size:          15px;
+    color:              black;
+}
+
+.name {
+    font-size:      20px;
+    font-family:    'Bitter', serif;
+    text-align:     left;
+}
+
+.slug {
+    display:            inline-block;
+    background-color:   #99FFFF;
+    padding:            10px;
+    border:             0px none;
+    border-radius:      10px;
+    margin:             0;
+}
+
+.body {
+    font-size:      15px;
+}
+
+.赤{
+    display:            inline-block;
+    padding:            10px;
+    border-radius:      10px;
+    background-color:   #CC0099;
+    margin:             0;
+}
+
+.青{
+    display:            inline-block;
+    padding:            10px;
+    border-radius:      10px;
+    background-color:   #66FFFF;
+    margin:             0;
+}
+
+.緑{
+    display:            inline-block;
+    padding:            10px;
+    border-radius:      10px;
+    background-color:   #99FF00;
+    margin:             0;
+}
+
+.other {
+    text-align: right;
+}
+
+.edit {
+    display:            inline-block;
+    width:              150px;
+    border:             0px none;
+    border-radius:      10px;
+    background-color:   #FFCC99;
+    opacity:            0.6;
+}
+
+.edit a {
+    display:    block;
+    width:      100%;
+    height:     100%;
+    text-align: center;
+    padding:    10px    0;
+}
+
+.delete {
+    display:            inline-block;
+    width:              150px;
+    border:             0px none;
+    border-radius:      10px;
+    background-color:   black;
+    opacity:            0.6;
+}
+
+.delete a {
+    display:    block;
+    width:      100%;
+    height:     100%;
+    text-align: center;
+    padding:    10px    0;
+    color:      red;
+}

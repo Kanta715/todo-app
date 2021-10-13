@@ -1,0 +1,32 @@
+@import model.CategoryForm.CategoryData
+@import lib.model.TodoCategory
+@import lib.model.TodoCategory.Color._
+
+@(
+vv:         model.TodoCategoryVV.ViewValueCategoryEdit,
+id:         TodoCategory.Id
+)(implicit request: RequestHeader,  messageProvider: MessagesProvider)
+
+    @common.Default(vv){
+        @helper.form(action = controllers.routes.TodoCategoryController.update(id.toInt)) {
+        @helper.CSRF.formField
+
+    @*   １行だけのテキスト  *@
+        @helper.inputText(vv.form("name"),
+        'size -> 50,    '_label -> "カテゴリー名",     '_showConstrains -> false,  'placeholder -> "カテゴリー名を入力"
+    )
+    @*   英数字のみのスラッグ名を入力    *@
+        @helper.inputText(vv.form("slug"),
+        'size -> 50,     '_label -> "スラッグ名",    '_showConstrains -> false,    'placeholder -> "slug名を英数字のみで入力"
+    )
+    @*   色を選択     *@
+        @helper.inputRadioGroup(vv.form("categoryColorCode"),
+        options = TodoCategory.Color.values.map(color => color.code.toString -> color.name),
+        '_label -> "背景色を選択"
+    )
+
+    <button class="done">編集完了</button>
+    <button class="home"><a href="/category/list">Category一覧に戻る</a></button>
+    }
+
+}

@@ -1,0 +1,40 @@
+@import model.TodoForm.TodoData
+@import lib.model.Todo
+@import lib.model.TodoCategory
+@import lib.persistence.onMySQL.TodoRepository
+@import lib.persistence.onMySQL.TodoCategoryRepository
+
+@(
+vv:           model.TodoVV.ViewValueStore,
+todoList:     Seq[TodoRepository.EntityEmbeddedId],
+categoryList: Seq[TodoCategoryRepository.EntityEmbeddedId]
+)(implicit request: RequestHeader,  messageProvider: MessagesProvider)
+
+@common.Default(vv){
+    @helper.form(action = controllers.routes.TodoController.store()) {
+        @helper.CSRF.formField
+
+        @*   １行だけのテキスト  *@
+        @helper.inputText(vv.form("title"),
+            'size -> 100,    '_label -> "タイトル",     '_showConstrains -> false,  'placeholder -> "タイトルを入力"
+        )
+        @*   複数行のテキスト(制約はない)    *@
+        @helper.textarea(vv.form("body"),
+            'rows -> 6,     'cols -> 150,        '_label -> "内容",    '_showConstrains -> false,
+            'placeholder -> "Todoの内容を入力（任意）"
+        )
+        @*   フロント、バック、インフラのみなのでラジオ式     *@
+        @helper.inputRadioGroup(vv.form("categoryId"),
+            options = for{
+                category <- categoryList
+            } yield {
+                category.id.toString -> category.v.name
+            },
+        '_label -> "開発カテゴリ"
+        )
+
+        <button class="store">登録する</button>
+        <button class="home"><a href="/todo/list">一覧画面に戻る</a></button>
+    }
+
+}
